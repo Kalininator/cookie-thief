@@ -20,11 +20,13 @@
     "clean:some": "rm -rf ./lib ./docs",
     "clean:all": "rm -rf ./node_modules ./package-lock.json ./lib ./docs",
     "pr:lint": "./node_modules/eslint/bin/eslint.js 'src/**/*.ts'",
-    "pr:test": "jest"
+    "pr:test": "jest",
+    "t": "ts-node testFile.ts"
   },
   "devDependencies": {
     "@types/jest": "^26.0.24",
     "@types/node": "^16.3.1",
+    "@types/sqlite3": "^3.1.7",
     "@typescript-eslint/eslint-plugin": "^4.28.2",
     "@typescript-eslint/parser": "^4.28.2",
     "eslint": "^7.30.0",
@@ -42,5 +44,9 @@
   },
   "engines": {
     "node": ">=12.0.0"
+  },
+  "dependencies": {
+    "keytar": "^7.7.0",
+    "sqlite3": "^5.0.2"
   }
 }
