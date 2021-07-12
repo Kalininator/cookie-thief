@@ -11,6 +11,7 @@ module.exports = {
   extends: ['airbnb-typescript/base', 'plugin:prettier/recommended'],
   rules: {
     // Disabling as it conflicts with prettier
-    '@typescript-eslint/indent': 'off'
+    '@typescript-eslint/indent': 'off',
+    'import/prefer-default-export': 'off',
   }
 };

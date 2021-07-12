@@ -1,72 +1,54 @@
 import { homedir } from 'os';
 import sqlite from 'sqlite3';
 
-import keytar from 'keytar';
-import { promisify } from 'util';
-import crypto from 'crypto';
+import { decrypt } from './decrypt';
+import { getDerivedKey } from './getDerivedKey';
 
 const ITERATIONS = 1003;
 const KEYLENGTH = 16;
 
-function decrypt(key: crypto.CipherKey, encryptedData: Buffer): string {
-  const iv = Buffer.from(new Array(KEYLENGTH + 1).join(' '), 'binary');
+type BooleanNumber = 0 | 1;
 
-  const decipher = crypto.createDecipheriv('aes-128-cbc', key, iv);
-  decipher.setAutoPadding(false);
-
-  const data = encryptedData.slice(3);
-  let decoded = decipher.update(data);
-
-  const final = decipher.final();
-  final.copy(decoded, decoded.length - 1);
-
-  const padding = decoded[decoded.length - 1];
-  if (padding) {
-    decoded = decoded.slice(0, decoded.length - padding);
-  }
-
-  return decoded.toString('utf8');
-}
-
-async function getDerivedKey(): Promise<Buffer> {
-  const chromePassword = await keytar.getPassword(
-    'Chrome Safe Storage',
-    'Chrome',
-  );
-  if (!chromePassword) throw new Error('Could not fetch chrome password');
-  const promisedPbkdf2 = promisify(crypto.pbkdf2);
-  const res = await promisedPbkdf2(
-    chromePassword,
-    'saltysalt',
-    ITERATIONS,
-    KEYLENGTH,
-    'sha1',
-  );
-
-  return res;
-}
+export type ChromeCookie = {
+  host_key: string;
+  path: string;
+  is_secure: BooleanNumber;
+  expires_utc: number;
+  name: string;
+  value: string;
+  encrypted_value: Buffer;
+  creation_utc: number;
+  is_httponly: BooleanNumber;
+  has_expires: BooleanNumber;
+  is_persistent: BooleanNumber;
+};
 
 async function tryGetCookie(
   db: sqlite.Database,
   domain: string,
   cookieName: string,
-): Promise<any> {
+): Promise<ChromeCookie | undefined> {
   return new Promise((resolve, reject) => {
     db.serialize(() => {
       db.get(
         `SELECT host_key, path, is_secure, expires_utc, name, value, encrypted_value, creation_utc, is_httponly, has_expires, is_persistent FROM cookies where host_key like '%${domain}' and name like '%${cookieName}' ORDER BY LENGTH(path) DESC, creation_utc ASC`,
-        (err, cookie) => {
+        (err?: Error, cookie?: ChromeCookie) => {
           if (err) {
             return reject(err);
           }
           return resolve(cookie);
+        },
+        () => {
+          db.close((err) => {
+            if (err) throw err;
+            console.log('Closed');
+          });
         },
       );
     });
   });
 }
 
-// eslint-disable-next-line import/prefer-default-export
 export async function getCookie(
   url: string,
   cookieName: string,
@@ -83,9 +65,9 @@ export async function getCookie(
 
   if (!cookie) return undefined;
 
-  const derivedKey = await getDerivedKey();
+  const derivedKey = await getDerivedKey(KEYLENGTH, ITERATIONS);
 
-  const value = decrypt(derivedKey, cookie.encrypted_value);
+  const value = decrypt(derivedKey, cookie.encrypted_value, KEYLENGTH);
 
   return value;
 }
