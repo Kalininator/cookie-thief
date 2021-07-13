@@ -4,7 +4,6 @@ import sqlite from 'sqlite3';
 import { decrypt } from './decrypt';
 import { getDerivedKey } from './getDerivedKey';
 
-const ITERATIONS = 1003;
 const KEYLENGTH = 16;
 
 type BooleanNumber = 0 | 1;
@@ -29,35 +28,44 @@ async function tryGetCookie(
   cookieName: string,
 ): Promise<ChromeCookie | undefined> {
   return new Promise((resolve, reject) => {
-    db.serialize(() => {
-      db.get(
-        `SELECT host_key, path, is_secure, expires_utc, name, value, encrypted_value, creation_utc, is_httponly, has_expires, is_persistent FROM cookies where host_key like '%${domain}' and name like '%${cookieName}' ORDER BY LENGTH(path) DESC, creation_utc ASC`,
-        (err?: Error, cookie?: ChromeCookie) => {
-          if (err) {
-            return reject(err);
-          }
-          return resolve(cookie);
-        },
-        () => {
-          db.close((err) => {
-            if (err) throw err;
-            console.log('Closed');
-          });
-        },
-      );
-    });
+    db.get(
+      `SELECT host_key, path, is_secure, expires_utc, name, value, encrypted_value, creation_utc, is_httponly, has_expires, is_persistent FROM cookies where host_key like '%${domain}' and name like '%${cookieName}' ORDER BY LENGTH(path) DESC, creation_utc ASC`,
+      (err?: Error, cookie?: ChromeCookie) => {
+        if (err) {
+          return reject(err);
+        }
+        return resolve(cookie);
+      },
+    );
   });
+}
+
+function getPath(): string {
+  if (process.platform === 'darwin')
+    return `${homedir()}/Library/Application Support/Google/Chrome/Default/Cookies`;
+  if (process.platform === 'linux')
+    return `${homedir()}/.config/google-chrome/Default/Cookies`;
+
+  throw new Error(`Platform ${process.platform} is not supported`);
+}
+
+function getIterations(): number {
+  if (process.platform === 'darwin') return 1003;
+  if (process.platform === 'linux') return 1;
+
+  throw new Error(`Platform ${process.platform} is not supported`);
 }
 
 export async function getCookie(
   url: string,
   cookieName: string,
 ): Promise<string | undefined> {
-  const path = `${homedir()}/Library/Application Support/Google/Chrome/Default/Cookies`;
+  const path = getPath();
 
   const urlObject = new URL(url);
   const { hostname } = urlObject;
   const domain = hostname.replace(/^[^.]+\./g, '');
+  const iterations = getIterations();
 
   const db = new sqlite.Database(path);
 
@@ -65,7 +73,7 @@ export async function getCookie(
 
   if (!cookie) return undefined;
 
-  const derivedKey = await getDerivedKey(KEYLENGTH, ITERATIONS);
+  const derivedKey = await getDerivedKey(KEYLENGTH, iterations);
 
   const value = decrypt(derivedKey, cookie.encrypted_value, KEYLENGTH);
 

@@ -2,7 +2,11 @@ import keytar from 'keytar';
 import { promisify } from 'util';
 import crypto from 'crypto';
 
-export async function getDerivedKey(
+const promisedPbkdf2 = promisify(crypto.pbkdf2);
+
+const SALT = 'saltysalt';
+
+async function getMacDerivedKey(
   keyLength: number,
   iterations: number,
 ): Promise<Buffer> {
@@ -11,14 +15,33 @@ export async function getDerivedKey(
     'Chrome',
   );
   if (!chromePassword) throw new Error('Could not fetch chrome password');
-  const promisedPbkdf2 = promisify(crypto.pbkdf2);
   const res = await promisedPbkdf2(
     chromePassword,
-    'saltysalt',
+    SALT,
     iterations,
     keyLength,
     'sha1',
   );
 
   return res;
+}
+
+async function getLinuxDerivedKey(
+  keyLength: number,
+  iterations: number,
+): Promise<Buffer> {
+  return promisedPbkdf2('peanuts', SALT, iterations, keyLength, 'sha1');
+}
+
+export async function getDerivedKey(
+  keyLength: number,
+  iterations: number,
+): Promise<Buffer> {
+  if (process.platform === 'darwin')
+    return getMacDerivedKey(keyLength, iterations);
+
+  if (process.platform === 'linux')
+    return getLinuxDerivedKey(keyLength, iterations);
+
+  throw new Error(`Platform ${process.platform} is not supported`);
 }

@@ -6,7 +6,8 @@
   "author": "Alex Kalinin (https://kalinin.uk)",
   "license": "MIT",
   "os": [
-    "darwin"
+    "darwin",
+    "linux"
   ],
   "repository": {
     "type": "git",
