@@ -1,6 +1,6 @@
 {
   "name": "cookie-thief",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Steal browser cookies",
   "main": "./lib/index.js",
   "author": "Alex Kalinin (https://kalinin.uk)",
@@ -52,10 +52,10 @@
     "node": ">=12.0.0"
   },
   "dependencies": {
-    "keytar": "^7.7.0",
     "sqlite3": "^5.0.2"
   },
   "optionalDependencies": {
+    "keytar": "^7.7.0",
     "win-dpapi": "^1.1.0"
   }
 }
