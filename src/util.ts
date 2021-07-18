@@ -1,8 +1,10 @@
 import { homedir } from 'os';
+import tld from 'tldjs';
 
 export function getDomain(url: string): string {
-  const { hostname } = new URL(url);
-  return hostname;
+  const domain = tld.getDomain(url);
+  if (domain) return domain;
+  throw new Error(`Failed to extract domain from URL ${url}`);
 }
 
 export function getPath(): string {

@@ -2,8 +2,14 @@ import { homedir } from 'os';
 import { getDomain, getIterations, getPath } from './util';
 
 describe('getDomain', () => {
-  it('should extract domain', () => {
+  it('should extract domain from github.com', () => {
     expect(getDomain('https://github.com')).toEqual('github.com');
+  });
+
+  it('should extract domain from https://some.web.site.com/some/page', () => {
+    expect(getDomain('https://some.web.site.com/some/page')).toEqual(
+      'site.com',
+    );
   });
 });
 
