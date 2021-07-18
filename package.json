@@ -9,6 +9,13 @@
     "lib/",
     "README.md"
   ],
+  "keywords": [
+    "cookies",
+    "google",
+    "chrome",
+    "decrypt",
+    "extract"
+  ],
   "os": [
     "darwin",
     "linux",
