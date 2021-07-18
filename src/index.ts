@@ -45,6 +45,8 @@ function getPath(): string {
     return `${homedir()}/Library/Application Support/Google/Chrome/Default/Cookies`;
   if (process.platform === 'linux')
     return `${homedir()}/.config/google-chrome/Default/Cookies`;
+  if (process.platform === 'win32')
+    return `${homedir()}\\AppData\\Local\\Google\\Chrome\\User Data\\${'Default'}\\Cookies`;
 
   throw new Error(`Platform ${process.platform} is not supported`);
 }
@@ -56,7 +58,7 @@ function getIterations(): number {
   throw new Error(`Platform ${process.platform} is not supported`);
 }
 
-export async function getCookie(
+export async function getChromeCookie(
   url: string,
   cookieName: string,
 ): Promise<string | undefined> {

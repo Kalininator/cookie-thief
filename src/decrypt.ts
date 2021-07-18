@@ -23,3 +23,19 @@ export function decrypt(
 
   return decoded.toString('utf8');
 }
+
+export function decryptWindows(encryptedData: Buffer): string {
+  // eslint-disable-next-line global-require
+  const dpapi = require('win-dpapi');
+
+  if (
+    encryptedData[0] === 0x01 &&
+    encryptedData[1] === 0x00 &&
+    encryptedData[2] === 0x00 &&
+    encryptedData[3] === 0x00
+  ) {
+    return dpapi
+      .unprotectData(encryptedData, null, 'CurrentUser')
+      .toString('utf-8');
+  }
+}

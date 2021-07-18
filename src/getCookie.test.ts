@@ -1,4 +1,4 @@
-import { getCookie } from '.';
+import { getChromeCookie } from '.';
 
 describe('get cookie', () => {
   describe('windows', () => {
@@ -19,7 +19,7 @@ describe('get cookie', () => {
 
     it('should throw error for windows', async () => {
       await expect(
-        getCookie('https://someurl.com', 'somecookie'),
+        getChromeCookie('https://someurl.com', 'somecookie'),
       ).rejects.toThrow('Platform windows is not supported');
     });
   });
