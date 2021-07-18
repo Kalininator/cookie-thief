@@ -51,7 +51,7 @@ export function decryptWindows(encryptedData: Buffer): string {
     const encryptedValue = encryptedData.slice(15, encryptedData.length - 16);
     const decipher = crypto.createDecipheriv('aes-256-gcm', key, nonce);
     decipher.setAuthTag(tag);
-    let str = decipher.update(encryptedValue, 'base64' as any, 'utf8');
+    let str = decipher.update(encryptedValue, undefined, 'utf8');
     str += decipher.final('utf-8');
     return str;
   }
