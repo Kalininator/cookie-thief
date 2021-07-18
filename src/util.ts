@@ -15,3 +15,10 @@ export function getPath(): string {
 
   throw new Error(`Platform ${process.platform} is not supported`);
 }
+
+export function getIterations(): number {
+  if (process.platform === 'darwin') return 1003;
+  if (process.platform === 'linux') return 1;
+
+  throw new Error(`Platform ${process.platform} is not supported`);
+}

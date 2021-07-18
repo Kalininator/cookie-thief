@@ -2,7 +2,7 @@ import sqlite from 'sqlite3';
 
 import { decrypt, decryptWindows } from './decrypt';
 import { getDerivedKey } from './getDerivedKey';
-import { getDomain, getPath } from './util';
+import { getDomain, getIterations, getPath } from './util';
 
 const KEYLENGTH = 16;
 
@@ -38,13 +38,6 @@ async function tryGetCookie(
       },
     );
   });
-}
-
-function getIterations(): number {
-  if (process.platform === 'darwin') return 1003;
-  if (process.platform === 'linux') return 1;
-
-  throw new Error(`Platform ${process.platform} is not supported`);
 }
 
 export async function getChromeCookie(
