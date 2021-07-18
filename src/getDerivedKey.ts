@@ -1,5 +1,6 @@
 import { promisify } from 'util';
 import crypto from 'crypto';
+import { getKeytar } from './optionalDependencies';
 
 const promisedPbkdf2 = promisify(crypto.pbkdf2);
 
@@ -9,8 +10,7 @@ async function getMacDerivedKey(
   keyLength: number,
   iterations: number,
 ): Promise<Buffer> {
-  // eslint-disable-next-line global-require
-  const keytar = require('keytar');
+  const keytar = getKeytar();
   const chromePassword = await keytar.getPassword(
     'Chrome Safe Storage',
     'Chrome',

@@ -1,6 +1,7 @@
 import crypto from 'crypto';
 import { readFileSync } from 'fs';
 import { homedir } from 'os';
+import { getDpapi } from './optionalDependencies';
 
 export function decrypt(
   key: crypto.CipherKey,
@@ -27,8 +28,7 @@ export function decrypt(
 }
 
 export function decryptWindows(encryptedData: Buffer): string {
-  // eslint-disable-next-line global-require
-  const dpapi = require('win-dpapi');
+  const dpapi = getDpapi();
 
   if (
     encryptedData[0] === 0x01 &&
