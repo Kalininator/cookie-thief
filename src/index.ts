@@ -67,7 +67,6 @@ export async function getChromeCookie(
   const urlObject = new URL(url);
   const { hostname } = urlObject;
   const domain = hostname.replace(/^[^.]+\./g, '');
-  // const iterations = getIterations();
 
   const db = new sqlite.Database(path);
 
@@ -75,10 +74,15 @@ export async function getChromeCookie(
 
   if (!cookie) return undefined;
 
-  // const derivedKey = await getDerivedKey(KEYLENGTH, iterations);
+  if (process.platform === 'darwin' || process.platform === 'linux') {
+    const iterations = getIterations();
+    const derivedKey = await getDerivedKey(KEYLENGTH, iterations);
+    return decrypt(derivedKey, cookie.encrypted_value, KEYLENGTH);
+  }
 
-  // const value = decrypt(derivedKey, cookie.encrypted_value, KEYLENGTH);
-  const value = decryptWindows(cookie.encrypted_value);
+  if (process.platform === 'win32') {
+    return decryptWindows(cookie.encrypted_value);
+  }
 
-  return value;
+  throw new Error(`Platform ${process.platform} is not supported`);
 }
