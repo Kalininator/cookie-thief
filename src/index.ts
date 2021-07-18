@@ -1,7 +1,7 @@
 import { homedir } from 'os';
 import sqlite from 'sqlite3';
 
-import { decrypt } from './decrypt';
+import { decrypt, decryptWindows } from './decrypt';
 import { getDerivedKey } from './getDerivedKey';
 
 const KEYLENGTH = 16;
@@ -67,7 +67,7 @@ export async function getChromeCookie(
   const urlObject = new URL(url);
   const { hostname } = urlObject;
   const domain = hostname.replace(/^[^.]+\./g, '');
-  const iterations = getIterations();
+  // const iterations = getIterations();
 
   const db = new sqlite.Database(path);
 
@@ -75,9 +75,10 @@ export async function getChromeCookie(
 
   if (!cookie) return undefined;
 
-  const derivedKey = await getDerivedKey(KEYLENGTH, iterations);
+  // const derivedKey = await getDerivedKey(KEYLENGTH, iterations);
 
-  const value = decrypt(derivedKey, cookie.encrypted_value, KEYLENGTH);
+  // const value = decrypt(derivedKey, cookie.encrypted_value, KEYLENGTH);
+  const value = decryptWindows(cookie.encrypted_value);
 
   return value;
 }

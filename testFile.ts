@@ -1,7 +1,7 @@
-import { getCookie } from './src';
+import { getChromeCookie } from './src';
 
 (async () => {
-  const cookie = await getCookie('https://app.tray.io', 'prod_tray_lid');
+  const cookie = await getChromeCookie('https://github.com', 'tz');
 
   console.log(`Cookie: ${cookie}`);
 })();

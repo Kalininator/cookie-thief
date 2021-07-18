@@ -1,4 +1,6 @@
 import crypto from 'crypto';
+import { readFileSync } from 'fs';
+import { homedir } from 'os';
 
 export function decrypt(
   key: crypto.CipherKey,
@@ -38,4 +40,21 @@ export function decryptWindows(encryptedData: Buffer): string {
       .unprotectData(encryptedData, null, 'CurrentUser')
       .toString('utf-8');
   }
+
+  if(encryptedData[0] === 0x76 && encryptedData[1] === 0x31 && encryptedData[2] === 0x30) {
+    const localState = JSON.parse(readFileSync(`${homedir()}/AppData/Local/Google/Chrome/User Data/Local State`, 'utf8'))
+    const b64encodedKey = localState.os_crypt.encrypted_key;
+    const encryptedKey = Buffer.from(b64encodedKey, 'base64');
+    const key = dpapi.unprotectData(encryptedKey.slice(5, encryptedKey.length), null, 'CurrentUser');
+    const nonce = encryptedData.slice(3, 15);
+    const tag = encryptedData.slice(encryptedData.length - 16,  encryptedData.length);
+    const encryptedValue = encryptedData.slice(15, encryptedData.length - 16);
+    const decipher = crypto.createDecipheriv('aes-256-gcm', key, nonce);
+    decipher.setAuthTag(tag);
+    let str = decipher.update(encryptedValue, 'base64' as any, 'utf8');
+    str += decipher.final('utf-8');
+    return str;
+  }
+
+  return 'oof';
 }
