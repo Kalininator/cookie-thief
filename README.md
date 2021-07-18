@@ -21,7 +21,7 @@ yarn add cookie-thief
 ## Usage
 
 ```javascript
-const cookieThief = require('cookieThief')
+const { getChromeCookie } = require('cookie-thief')
 
 // Get a cookie from chrome browser for domain .github.com, searching for cookie named 'dotcom_user'
 const cookie = await getChromeCookie('https://github.com', 'dotcom_user');
