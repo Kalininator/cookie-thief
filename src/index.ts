@@ -1,8 +1,8 @@
-import { homedir } from 'os';
 import sqlite from 'sqlite3';
 
 import { decrypt, decryptWindows } from './decrypt';
 import { getDerivedKey } from './getDerivedKey';
+import { getDomain, getPath } from './util';
 
 const KEYLENGTH = 16;
 
@@ -40,17 +40,6 @@ async function tryGetCookie(
   });
 }
 
-function getPath(): string {
-  if (process.platform === 'darwin')
-    return `${homedir()}/Library/Application Support/Google/Chrome/Default/Cookies`;
-  if (process.platform === 'linux')
-    return `${homedir()}/.config/google-chrome/Default/Cookies`;
-  if (process.platform === 'win32')
-    return `${homedir()}\\AppData\\Local\\Google\\Chrome\\User Data\\${'Default'}\\Cookies`;
-
-  throw new Error(`Platform ${process.platform} is not supported`);
-}
-
 function getIterations(): number {
   if (process.platform === 'darwin') return 1003;
   if (process.platform === 'linux') return 1;
@@ -63,10 +52,7 @@ export async function getChromeCookie(
   cookieName: string,
 ): Promise<string | undefined> {
   const path = getPath();
-
-  const urlObject = new URL(url);
-  const { hostname } = urlObject;
-  const domain = hostname.replace(/^[^.]+\./g, '');
+  const domain = getDomain(url);
 
   const db = new sqlite.Database(path);
 
