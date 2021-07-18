@@ -29,3 +29,14 @@ console.log(cookie);
 // Will be a string if cookie is successfully found
 // Will be undefined if not found
 ```
+
+## Limitations
+
+### macOS
+On macOS, this package requires keychain access to access the Google Chrome encryption key. You will get a dialogue popup requesting access.
+
+### Chrome profiles
+Currently only using the `Default` chrome profile. Looking to make this configurable in the future.
+
+## License
+This software is free to use under the MIT license. See the [LICENSE file](https://github.com/kalininator/cookie-thief/blob/master/LICENSE.md) for license text and copyright information.
