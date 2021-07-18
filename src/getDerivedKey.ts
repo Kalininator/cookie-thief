@@ -1,6 +1,6 @@
-import keytar from 'keytar';
 import { promisify } from 'util';
 import crypto from 'crypto';
+import { getKeytar } from './optionalDependencies';
 
 const promisedPbkdf2 = promisify(crypto.pbkdf2);
 
@@ -10,6 +10,7 @@ async function getMacDerivedKey(
   keyLength: number,
   iterations: number,
 ): Promise<Buffer> {
+  const keytar = getKeytar();
   const chromePassword = await keytar.getPassword(
     'Chrome Safe Storage',
     'Chrome',

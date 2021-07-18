@@ -1,7 +1,7 @@
 import { homedir } from 'os';
 import sqlite from 'sqlite3';
 
-import { decrypt } from './decrypt';
+import { decrypt, decryptWindows } from './decrypt';
 import { getDerivedKey } from './getDerivedKey';
 
 const KEYLENGTH = 16;
@@ -45,6 +45,8 @@ function getPath(): string {
     return `${homedir()}/Library/Application Support/Google/Chrome/Default/Cookies`;
   if (process.platform === 'linux')
     return `${homedir()}/.config/google-chrome/Default/Cookies`;
+  if (process.platform === 'win32')
+    return `${homedir()}\\AppData\\Local\\Google\\Chrome\\User Data\\${'Default'}\\Cookies`;
 
   throw new Error(`Platform ${process.platform} is not supported`);
 }
@@ -56,7 +58,7 @@ function getIterations(): number {
   throw new Error(`Platform ${process.platform} is not supported`);
 }
 
-export async function getCookie(
+export async function getChromeCookie(
   url: string,
   cookieName: string,
 ): Promise<string | undefined> {
@@ -65,7 +67,6 @@ export async function getCookie(
   const urlObject = new URL(url);
   const { hostname } = urlObject;
   const domain = hostname.replace(/^[^.]+\./g, '');
-  const iterations = getIterations();
 
   const db = new sqlite.Database(path);
 
@@ -73,9 +74,15 @@ export async function getCookie(
 
   if (!cookie) return undefined;
 
-  const derivedKey = await getDerivedKey(KEYLENGTH, iterations);
+  if (process.platform === 'darwin' || process.platform === 'linux') {
+    const iterations = getIterations();
+    const derivedKey = await getDerivedKey(KEYLENGTH, iterations);
+    return decrypt(derivedKey, cookie.encrypted_value, KEYLENGTH);
+  }
 
-  const value = decrypt(derivedKey, cookie.encrypted_value, KEYLENGTH);
+  if (process.platform === 'win32') {
+    return decryptWindows(cookie.encrypted_value);
+  }
 
-  return value;
+  throw new Error(`Platform ${process.platform} is not supported`);
 }
