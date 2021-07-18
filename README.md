@@ -6,7 +6,7 @@ Inspired by [chrome-cookies-secure](https://github.com/bertrandom/chrome-cookies
 
 ## Compatibility
 
-Currently supports only Google Chrome, on MacOS, Linux, and Windows.
+Currently supports only Google Chrome on MacOS, Linux, and Windows.
 
 In the future will hopefully expand to support other browsers.
 
