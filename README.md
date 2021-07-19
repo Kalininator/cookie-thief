@@ -1,5 +1,7 @@
 # Cookie Thief
 ![npm](https://img.shields.io/npm/v/cookie-thief)
+![npm bundle size](https://img.shields.io/bundlephobia/min/cookie-thief)
+![npm bundle size](https://img.shields.io/bundlephobia/minzip/cookie-thief)
 
 A node.js library for extracting cookies from a browser installed on your system. 
 Inspired by [chrome-cookies-secure](https://github.com/bertrandom/chrome-cookies-secure).
