@@ -1,5 +1,6 @@
 # Cookie Thief
 ![npm](https://img.shields.io/npm/v/cookie-thief)
+![npm](https://img.shields.io/npm/dw/cookie-thief)
 ![npm bundle size](https://img.shields.io/bundlephobia/min/cookie-thief)
 ![npm bundle size](https://img.shields.io/bundlephobia/minzip/cookie-thief)
 
