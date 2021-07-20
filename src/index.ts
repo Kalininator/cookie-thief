@@ -1,4 +1,4 @@
-import sqlite from 'sqlite3';
+import sqlite from 'better-sqlite3';
 
 import { decrypt, decryptWindows } from './decrypt';
 import { getDerivedKey } from './getDerivedKey';
@@ -22,22 +22,16 @@ export type ChromeCookie = {
   is_persistent: BooleanNumber;
 };
 
-async function tryGetCookie(
-  db: sqlite.Database,
+function tryGetCookie(
+  path: string,
   domain: string,
   cookieName: string,
-): Promise<ChromeCookie | undefined> {
-  return new Promise((resolve, reject) => {
-    db.get(
-      `SELECT host_key, path, is_secure, expires_utc, name, value, encrypted_value, creation_utc, is_httponly, has_expires, is_persistent FROM cookies where host_key like '%${domain}' and name like '%${cookieName}' ORDER BY LENGTH(path) DESC, creation_utc ASC`,
-      (err?: Error, cookie?: ChromeCookie) => {
-        if (err) {
-          return reject(err);
-        }
-        return resolve(cookie);
-      },
-    );
-  });
+): ChromeCookie | undefined {
+  const db = sqlite(path, { readonly: true, fileMustExist: true });
+  const statement = db.prepare(
+    `SELECT host_key, path, is_secure, expires_utc, name, value, encrypted_value, creation_utc, is_httponly, has_expires, is_persistent FROM cookies where host_key like '%${domain}' and name like '%${cookieName}' ORDER BY LENGTH(path) DESC, creation_utc ASC`,
+  );
+  return statement.get();
 }
 
 export async function getChromeCookie(
@@ -47,9 +41,7 @@ export async function getChromeCookie(
   const path = getPath();
   const domain = getDomain(url);
 
-  const db = new sqlite.Database(path);
-
-  const cookie = await tryGetCookie(db, domain, cookieName);
+  const cookie = tryGetCookie(path, domain, cookieName);
 
   if (!cookie) return undefined;
 
