@@ -56,6 +56,5 @@ export async function getFirefoxCookies(
     `SELECT value from moz_cookies WHERE name like '${cookieName}' AND host like '%${domain}'`,
   );
   const res = statement.get();
-  console.log(res);
-  return res.value;
+  return res?.value;
 }
