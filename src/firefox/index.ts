@@ -3,7 +3,6 @@ import { readFileSync } from 'fs';
 import { homedir } from 'os';
 import { join } from 'path';
 import * as ini from 'ini';
-import _ from 'lodash';
 import { getDomain } from 'tldjs';
 
 function getUserDirectory(): string {
@@ -31,9 +30,13 @@ function getProfiles(): FirefoxProfile[] {
   const fileData = readFileSync(join(userDirectory, 'profiles.ini'), {
     encoding: 'utf8',
   });
-  return _.filter(ini.parse(fileData), (_value, key) => {
-    return _.isString(key) && key.match(/^Profile/);
-  });
+
+  const iniData = ini.parse(fileData);
+  return Object.keys(iniData)
+    .filter((key) => {
+      return typeof key === 'string' && key.match(/^Profile/);
+    })
+    .map((key) => iniData[key]);
 }
 
 function getCookieFilePath(): string {
