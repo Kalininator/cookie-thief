@@ -55,5 +55,8 @@ On macOS, this package requires keychain access to access the Google Chrome encr
 ### Chrome profiles
 Currently only using the `Default` chrome profile. Looking to make this configurable in the future.
 
+### Firefox profiles
+Currently will use the `default-release` profile for Firefox.
+
 ## License
 This software is free to use under the MIT license. See the [LICENSE file](https://github.com/kalininator/cookie-thief/blob/master/LICENSE.md) for license text and copyright information.
