@@ -38,10 +38,10 @@ console.log(cookie);
 ### Firefox
 
 ```javascript
-const { getFirefoxCookies } = require('cookie-thief')
+const { getFirefoxCookie } = require('cookie-thief')
 
 // Get a cookie from chrome browser for domain .github.com, searching for cookie named 'dotcom_user'
-const cookie = await getFirefoxCookies('https://github.com', 'dotcom_user');
+const cookie = await getFirefoxCookie('https://github.com', 'dotcom_user');
 console.log(cookie);
 // Will be a string if cookie is successfully found
 // Will be undefined if not found

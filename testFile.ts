@@ -1,8 +1,8 @@
-import { getChromeCookie, getFirefoxCookies } from './src';
+import { getChromeCookie, getFirefoxCookie } from './src';
 
 (async () => {
   // const cookie = await getChromeCookie('https://github.com', 'tz');
-  const cookie = await getFirefoxCookies('https://github.com', 'user_session');
+  const cookie = await getFirefoxCookie('https://github.com', 'user_session');
 
   console.log(`Cookie: ${cookie}`);
 })();

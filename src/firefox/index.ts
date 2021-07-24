@@ -48,7 +48,7 @@ function getCookieFilePath(): string {
   return join(getUserDirectory(), defaultProfile.Path, 'cookies.sqlite');
 }
 
-export async function getFirefoxCookies(
+export async function getFirefoxCookie(
   url: string,
   cookieName: string,
 ): Promise<string> {
