@@ -4,6 +4,7 @@ import { homedir } from 'os';
 import { join } from 'path';
 import * as ini from 'ini';
 import { getDomain } from 'tldjs';
+import { mergeDefaults } from '../utils';
 
 function getUserDirectory(): string {
   switch (process.platform) {
@@ -54,21 +55,12 @@ const defaultOptions: GetFirefoxCookieOptions = {
   profile: 'default-release',
 };
 
-function mergeDefaultOptions(
-  options?: Partial<GetFirefoxCookieOptions>,
-): GetFirefoxCookieOptions {
-  return {
-    ...defaultOptions,
-    ...(options || {}),
-  };
-}
-
 export async function getFirefoxCookie(
   url: string,
   cookieName: string,
   options?: Partial<GetFirefoxCookieOptions>,
 ): Promise<string> {
-  const config = mergeDefaultOptions(options);
+  const config = mergeDefaults(defaultOptions, options);
   const domain = getDomain(url);
   const cookieFilePath = getCookieFilePath(config.profile);
   const db = sqlite(cookieFilePath, { readonly: true, fileMustExist: true });

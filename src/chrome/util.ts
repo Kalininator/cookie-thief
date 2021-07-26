@@ -7,13 +7,13 @@ export function getDomain(url: string): string {
   throw new Error(`Failed to extract domain from URL ${url}`);
 }
 
-export function getPath(): string {
+export function getPath(profile: string): string {
   if (process.platform === 'darwin')
-    return `${homedir()}/Library/Application Support/Google/Chrome/Default/Cookies`;
+    return `${homedir()}/Library/Application Support/Google/Chrome/${profile}/Cookies`;
   if (process.platform === 'linux')
-    return `${homedir()}/.config/google-chrome/Default/Cookies`;
+    return `${homedir()}/.config/google-chrome/${profile}/Cookies`;
   if (process.platform === 'win32')
-    return `${homedir()}\\AppData\\Local\\Google\\Chrome\\User Data\\${'Default'}\\Cookies`;
+    return `${homedir()}\\AppData\\Local\\Google\\Chrome\\User Data\\${profile}\\Cookies`;
 
   throw new Error(`Platform ${process.platform} is not supported`);
 }
