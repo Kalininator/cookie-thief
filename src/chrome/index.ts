@@ -1,4 +1,5 @@
 import sqlite from 'better-sqlite3';
+import { mergeDefaults } from '../utils';
 
 import { decrypt, decryptWindows } from './decrypt';
 import { getDerivedKey } from './getDerivedKey';
@@ -34,11 +35,21 @@ function tryGetCookie(
   return statement.get();
 }
 
+export interface GetChromeCookiesOptions {
+  profile: string;
+}
+
+const defaultOptions: GetChromeCookiesOptions = {
+  profile: 'Default',
+};
+
 export async function getChromeCookie(
   url: string,
   cookieName: string,
+  options?: Partial<GetChromeCookiesOptions>,
 ): Promise<string | undefined> {
-  const path = getPath();
+  const config = mergeDefaults(defaultOptions, options);
+  const path = getPath(config.profile);
   const domain = getDomain(url);
 
   const cookie = tryGetCookie(path, domain, cookieName);

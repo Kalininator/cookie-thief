@@ -23,7 +23,7 @@ describe('getPath', () => {
       value: 'win32',
     });
 
-    expect(getPath()).toEqual(
+    expect(getPath('Default')).toEqual(
       `${homedir()}\\AppData\\Local\\Google\\Chrome\\User Data\\Default\\Cookies`,
     );
 
@@ -41,7 +41,7 @@ describe('getPath', () => {
       value: 'darwin',
     });
 
-    expect(getPath()).toEqual(
+    expect(getPath('Default')).toEqual(
       `${homedir()}/Library/Application Support/Google/Chrome/Default/Cookies`,
     );
 
@@ -59,7 +59,7 @@ describe('getPath', () => {
       value: 'linux',
     });
 
-    expect(getPath()).toEqual(
+    expect(getPath('Default')).toEqual(
       `${homedir()}/.config/google-chrome/Default/Cookies`,
     );
 
@@ -77,7 +77,9 @@ describe('getPath', () => {
       value: 'freebsd',
     });
 
-    expect(() => getPath()).toThrow('Platform freebsd is not supported');
+    expect(() => getPath('Default')).toThrow(
+      'Platform freebsd is not supported',
+    );
 
     Object.defineProperty(process, 'platform', {
       value: originalPlatform,
