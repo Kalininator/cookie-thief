@@ -11,7 +11,7 @@ function getUserDirectory(): string {
     case 'darwin':
       return join(homedir(), '/Library/Application Support/Firefox');
     case 'linux':
-      return join(homedir(), '/.mozilla/fiefox');
+      return join(homedir(), '/.mozilla/firefox');
     case 'win32':
       return join(process.env.APPDATA!, '/Mozilla/Firefox');
     default:
