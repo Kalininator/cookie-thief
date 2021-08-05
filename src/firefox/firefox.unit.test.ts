@@ -77,4 +77,58 @@ describe('firefox get cookie', () => {
       );
     });
   });
+
+  describe('windows', () => {
+    let originalPlatform: any;
+    let originalAppData: any;
+
+    beforeAll(() => {
+      originalPlatform = Object.getOwnPropertyDescriptor(process, 'platform');
+      Object.defineProperty(process, 'platform', {
+        value: 'win32',
+      });
+      originalAppData = process.env.APPDATA;
+      process.env.APPDATA = 'C:/foo';
+    });
+
+    afterAll(() => {
+      Object.defineProperty(process, 'platform', {
+        value: originalPlatform,
+      });
+      process.env.APPDATA = originalAppData;
+    });
+
+    it('should fetch cookie correctly', async () => {
+      expect(await getFirefoxCookie('https://some.url', 'some-cookie')).toEqual(
+        'foo',
+      );
+      expect(sqlite).toHaveBeenCalledWith(
+        `C:/foo/Mozilla/Firefox/Profiles/tfhz7h6q.default-release/cookies.sqlite`,
+        { fileMustExist: true, readonly: true },
+      );
+    });
+  });
+
+  describe('unsupported OS', () => {
+    let originalPlatform: any;
+
+    beforeAll(() => {
+      originalPlatform = Object.getOwnPropertyDescriptor(process, 'platform');
+      Object.defineProperty(process, 'platform', {
+        value: 'freebsd',
+      });
+    });
+
+    afterAll(() => {
+      Object.defineProperty(process, 'platform', {
+        value: originalPlatform,
+      });
+    });
+
+    it('should throw an error', async () => {
+      await expect(
+        getFirefoxCookie('https://someurl.com', 'some-cookie'),
+      ).rejects.toThrow('Platform freebsd is not supported');
+    });
+  });
 });
