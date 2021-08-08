@@ -1,6 +1,6 @@
 import * as sqlite from 'better-sqlite3';
 import { homedir } from 'os';
-import { getFirefoxCookie } from '..';
+import { getFirefoxCookie } from '../src';
 
 jest.mock('fs', () => ({
   readFileSync: jest.fn().mockReturnValue(`[Profile1]
