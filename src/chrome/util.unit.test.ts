@@ -11,6 +11,12 @@ describe('getDomain', () => {
       'site.com',
     );
   });
+
+  it('should fail to extract domain', () => {
+    expect(() => getDomain('foo')).toThrowError(
+      'Failed to extract domain from URL foo',
+    );
+  });
 });
 
 describe('getPath', () => {
