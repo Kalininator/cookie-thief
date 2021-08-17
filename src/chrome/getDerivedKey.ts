@@ -27,7 +27,7 @@ async function getMacDerivedKey(
   return res;
 }
 
-async function getLinuxDerivedKey(
+export async function getLinuxDerivedKey(
   keyLength: number,
   iterations: number,
 ): Promise<Buffer> {
