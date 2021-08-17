@@ -2,7 +2,6 @@ import { createCipheriv } from 'crypto';
 import { decrypt } from './decrypt';
 import { getLinuxDerivedKey } from './getDerivedKey';
 
-
 describe('chrome decrypt - linux', () => {
   let originalPlatform: any;
 
