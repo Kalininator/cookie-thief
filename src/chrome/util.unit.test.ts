@@ -1,5 +1,6 @@
 import { homedir } from 'os';
 import { getDomain, getIterations, getPath } from './util';
+import { mockPlatform, restorePlatform } from '../../test/util';
 
 describe('getDomain', () => {
   it('should extract domain from github.com', () => {
@@ -20,125 +21,61 @@ describe('getDomain', () => {
 });
 
 describe('getPath', () => {
+  afterEach(() => {
+    restorePlatform();
+  });
+
   it('should get correct windows path', async () => {
-    const originalPlatform = Object.getOwnPropertyDescriptor(
-      process,
-      'platform',
-    );
-    Object.defineProperty(process, 'platform', {
-      value: 'win32',
-    });
+    mockPlatform('win32');
 
     expect(getPath('Default')).toEqual(
       `${homedir()}\\AppData\\Local\\Google\\Chrome\\User Data\\Default\\Cookies`,
     );
-
-    Object.defineProperty(process, 'platform', {
-      value: originalPlatform,
-    });
   });
 
   it('should get correct macos path', async () => {
-    const originalPlatform = Object.getOwnPropertyDescriptor(
-      process,
-      'platform',
-    );
-    Object.defineProperty(process, 'platform', {
-      value: 'darwin',
-    });
+    mockPlatform('darwin');
 
     expect(getPath('Default')).toEqual(
       `${homedir()}/Library/Application Support/Google/Chrome/Default/Cookies`,
     );
-
-    Object.defineProperty(process, 'platform', {
-      value: originalPlatform,
-    });
   });
 
   it('should get correct linux path', async () => {
-    const originalPlatform = Object.getOwnPropertyDescriptor(
-      process,
-      'platform',
-    );
-    Object.defineProperty(process, 'platform', {
-      value: 'linux',
-    });
+    mockPlatform('linux');
 
     expect(getPath('Default')).toEqual(
       `${homedir()}/.config/google-chrome/Default/Cookies`,
     );
-
-    Object.defineProperty(process, 'platform', {
-      value: originalPlatform,
-    });
   });
 
   it('should throw if invalid os', () => {
-    const originalPlatform = Object.getOwnPropertyDescriptor(
-      process,
-      'platform',
-    );
-    Object.defineProperty(process, 'platform', {
-      value: 'freebsd',
-    });
+    mockPlatform('freebsd');
 
     expect(() => getPath('Default')).toThrow(
       'Platform freebsd is not supported',
     );
-
-    Object.defineProperty(process, 'platform', {
-      value: originalPlatform,
-    });
   });
 });
 
 describe('getIterations', () => {
+  afterEach(restorePlatform);
+
   it('should get correct macos iterations', async () => {
-    const originalPlatform = Object.getOwnPropertyDescriptor(
-      process,
-      'platform',
-    );
-    Object.defineProperty(process, 'platform', {
-      value: 'darwin',
-    });
+    mockPlatform('darwin');
 
     expect(getIterations()).toEqual(1003);
-
-    Object.defineProperty(process, 'platform', {
-      value: originalPlatform,
-    });
   });
 
   it('should get correct linux iterations', async () => {
-    const originalPlatform = Object.getOwnPropertyDescriptor(
-      process,
-      'platform',
-    );
-    Object.defineProperty(process, 'platform', {
-      value: 'linux',
-    });
+    mockPlatform('linux');
 
     expect(getIterations()).toEqual(1);
-
-    Object.defineProperty(process, 'platform', {
-      value: originalPlatform,
-    });
   });
 
   it('should throw if invalid os', () => {
-    const originalPlatform = Object.getOwnPropertyDescriptor(
-      process,
-      'platform',
-    );
-    Object.defineProperty(process, 'platform', {
-      value: 'windows',
-    });
+    mockPlatform('win32');
 
-    expect(() => getIterations()).toThrow('Platform windows is not supported');
-
-    Object.defineProperty(process, 'platform', {
-      value: originalPlatform,
-    });
+    expect(() => getIterations()).toThrow('Platform win32 is not supported');
   });
 });
