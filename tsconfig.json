@@ -26,6 +26,7 @@
   "exclude": [
     "node_modules",
     "**/*.test.ts",
-    "testFile.ts"
+    "testFile.ts",
+    "test"
   ]
 }

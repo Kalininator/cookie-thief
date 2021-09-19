@@ -1,4 +1,5 @@
 import { getChromeCookie } from '../../src';
+import { mockPlatform, restorePlatform } from '../util';
 
 jest.mock('better-sqlite3', () =>
   jest.fn().mockReturnValue({
@@ -15,19 +16,12 @@ jest.mock('../../src/chrome/decrypt', () => ({
 }));
 
 describe('chrome - linux', () => {
-  let originalPlatform: any;
-
   beforeAll(() => {
-    originalPlatform = Object.getOwnPropertyDescriptor(process, 'platform');
-    Object.defineProperty(process, 'platform', {
-      value: 'linux',
-    });
+    mockPlatform('linux');
   });
 
   afterAll(() => {
-    Object.defineProperty(process, 'platform', {
-      value: originalPlatform,
-    });
+    restorePlatform();
   });
 
   it('gets and decrypts linux cookie', async () => {
