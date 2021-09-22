@@ -27,11 +27,16 @@ yarn add cookie-thief
 ### Google Chrome
 
 ```javascript
-const { getChromeCookie } = require('cookie-thief')
+const { getCookie, Browser } = require('cookie-thief')
 
 // Get a cookie from chrome browser for domain .github.com, searching for cookie named 'dotcom_user'
-const cookie = await getChromeCookie('https://github.com', 'dotcom_user', {
-  profile: 'Default',
+const cookie = await getCookie({
+  browser: Browser.Chrome,
+  url: 'https://github.com',
+  cookieName: 'dotcom_user',
+  options: {
+    profile: 'Default',
+  },
 });
 console.log(cookie);
 // Will be a string if cookie is successfully found
@@ -41,11 +46,16 @@ console.log(cookie);
 ### Firefox
 
 ```javascript
-const { getFirefoxCookie } = require('cookie-thief')
+const { getCookie, Browser } = require('cookie-thief')
 
 // Get a cookie from chrome browser for domain .github.com, searching for cookie named 'dotcom_user'
-const cookie = await getFirefoxCookie('https://github.com', 'dotcom_user', {
-  profile: 'default-release',
+const cookie = await getCookie({
+  browser: Browser.Firefox,
+  url: 'https://github.com',
+  cookieName: 'dotcom_user',
+  options: {
+    profile: 'default-release',
+  },
 });
 console.log(cookie);
 // Will be a string if cookie is successfully found
