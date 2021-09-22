@@ -1,4 +1,4 @@
-import { getChromeCookie } from '../../src';
+import { Browser, getCookie } from '../../src';
 import { mockPlatform, restorePlatform } from '../util';
 
 jest.mock('better-sqlite3', () =>
@@ -25,7 +25,11 @@ describe('chrome - linux', () => {
   });
 
   it('gets and decrypts linux cookie', async () => {
-    const res = await getChromeCookie('https://someUrl.com', 'foo');
+    const res = await getCookie({
+      browser: Browser.Chrome,
+      url: 'https://someUrl.com',
+      cookieName: 'foo',
+    });
 
     expect(res).toEqual('bar');
   });
