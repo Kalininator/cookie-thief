@@ -1,6 +1,6 @@
 import * as sqlite from 'better-sqlite3';
 import { homedir } from 'os';
-import { getFirefoxCookie } from '../src';
+import { getCookie, getFirefoxCookie, Browser } from '../src';
 
 jest.mock('fs', () => ({
   readFileSync: jest.fn().mockReturnValue(`[Profile1]
@@ -41,9 +41,13 @@ describe('firefox get cookie', () => {
     });
 
     it('should fetch cookie correctly', async () => {
-      expect(await getFirefoxCookie('https://some.url', 'some-cookie')).toEqual(
-        'foo',
-      );
+      expect(
+        await getCookie({
+          browser: Browser.Firefox,
+          url: 'https://some.url',
+          cookieName: 'some-cookie',
+        }),
+      ).toEqual('foo');
       expect(sqlite).toHaveBeenCalledWith(
         `${homedir()}/Library/Application Support/Firefox/Profiles/tfhz7h6q.default-release/cookies.sqlite`,
         { fileMustExist: true, readonly: true },
@@ -68,9 +72,13 @@ describe('firefox get cookie', () => {
     });
 
     it('should fetch cookie correctly', async () => {
-      expect(await getFirefoxCookie('https://some.url', 'some-cookie')).toEqual(
-        'foo',
-      );
+      expect(
+        await getCookie({
+          browser: Browser.Firefox,
+          url: 'https://some.url',
+          cookieName: 'some-cookie',
+        }),
+      ).toEqual('foo');
       expect(sqlite).toHaveBeenCalledWith(
         `${homedir()}/.mozilla/firefox/Profiles/tfhz7h6q.default-release/cookies.sqlite`,
         { fileMustExist: true, readonly: true },
@@ -99,9 +107,13 @@ describe('firefox get cookie', () => {
     });
 
     it('should fetch cookie correctly', async () => {
-      expect(await getFirefoxCookie('https://some.url', 'some-cookie')).toEqual(
-        'foo',
-      );
+      expect(
+        await getCookie({
+          browser: Browser.Firefox,
+          url: 'https://some.url',
+          cookieName: 'some-cookie',
+        }),
+      ).toEqual('foo');
       expect(sqlite).toHaveBeenCalledWith(
         `C:/foo/Mozilla/Firefox/Profiles/tfhz7h6q.default-release/cookies.sqlite`,
         { fileMustExist: true, readonly: true },
@@ -127,7 +139,11 @@ describe('firefox get cookie', () => {
 
     it('should throw an error', async () => {
       await expect(
-        getFirefoxCookie('https://someurl.com', 'some-cookie'),
+        getCookie({
+          browser: Browser.Firefox,
+          url: 'https://someurl.com',
+          cookieName: 'some-cookie',
+        }),
       ).rejects.toThrow('Platform freebsd is not supported');
     });
   });
