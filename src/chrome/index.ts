@@ -43,6 +43,9 @@ const defaultOptions: GetChromeCookiesOptions = {
   profile: 'Default',
 };
 
+/**
+ * @deprecated Replaced by getCookie
+ */
 export async function getChromeCookie(
   url: string,
   cookieName: string,
