@@ -5,38 +5,38 @@ import { assertUnreachable } from './utils';
 export * from './chrome';
 export * from './firefox';
 
-export enum SupportedBrowser {
+export enum Browser {
   Firefox = 'firefox',
   Chrome = 'chrome',
 }
 
 interface BaseGetCookieConfig {
-  browser: SupportedBrowser;
+  browser: Browser;
   url: string;
   cookieName: string;
 }
 
 export interface GetFirefoxCookieConfig extends BaseGetCookieConfig {
-  browser: SupportedBrowser.Firefox;
+  browser: Browser.Firefox;
   options?: Partial<GetFirefoxCookieOptions>;
 }
 
 export interface GetChromeCookieConfig extends BaseGetCookieConfig {
-  browser: SupportedBrowser.Chrome;
+  browser: Browser.Chrome;
   options?: Partial<GetChromeCookiesOptions>;
 }
 
-export function listSupportedBrowsers(): SupportedBrowser[] {
-  return Object.values(SupportedBrowser);
+export function listSupportedBrowsers(): Browser[] {
+  return Object.values(Browser);
 }
 
 export async function getCookie(
   config: GetFirefoxCookieConfig | GetChromeCookieConfig,
 ): Promise<string | undefined> {
   switch (config.browser) {
-    case SupportedBrowser.Firefox:
+    case Browser.Firefox:
       return getFirefoxCookie(config.url, config.cookieName, config.options);
-    case SupportedBrowser.Chrome:
+    case Browser.Chrome:
       return getChromeCookie(config.url, config.cookieName, config.options);
     default:
       return assertUnreachable(config);
