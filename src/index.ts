@@ -26,6 +26,10 @@ export interface GetChromeCookieConfig extends BaseGetCookieConfig {
   options?: Partial<GetChromeCookiesOptions>;
 }
 
+export function listSupportedBrowsers(): SupportedBrowser[] {
+  return Object.values(SupportedBrowser);
+}
+
 export async function getCookie(
   config: GetFirefoxCookieConfig | GetChromeCookieConfig,
 ): Promise<string | undefined> {
