@@ -55,6 +55,10 @@ const defaultOptions: GetFirefoxCookieOptions = {
   profile: 'default-release',
 };
 
+/**
+ * @deprecated Replaced by getCookie
+ */
+
 export async function getFirefoxCookie(
   url: string,
   cookieName: string,

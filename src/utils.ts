@@ -4,3 +4,7 @@ export function mergeDefaults<T>(defaults: T, options?: Partial<T>): T {
     ...(options || {}),
   };
 }
+
+export function assertUnreachable(x: never): never {
+  return x;
+}
