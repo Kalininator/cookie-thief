@@ -4,6 +4,7 @@ import { assertUnreachable } from './utils';
 
 export * from './chrome';
 export * from './firefox';
+export * from './types';
 
 export enum Browser {
   Firefox = 'firefox',

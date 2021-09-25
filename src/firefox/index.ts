@@ -5,6 +5,7 @@ import * as ini from 'ini';
 import { getDomain } from 'tldjs';
 import { mergeDefaults } from '../utils';
 import { FirefoxCookieDatabase } from './FirefoxCookieDatabase';
+import { Cookie } from '../types';
 
 function getUserDirectory(): string {
   switch (process.platform) {
@@ -70,4 +71,13 @@ export async function getFirefoxCookie(
   const cookieFilePath = getCookieFilePath(config.profile);
   const db = new FirefoxCookieDatabase(cookieFilePath);
   return db.findCookie(cookieName, domain);
+}
+
+export async function listFirefoxCookies(
+  options?: Partial<GetFirefoxCookieOptions>,
+): Promise<Cookie[]> {
+  const config = mergeDefaults(defaultOptions, options);
+  const cookieFilePath = getCookieFilePath(config.profile);
+  const db = new FirefoxCookieDatabase(cookieFilePath);
+  return db.listCookies();
 }
