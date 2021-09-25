@@ -1,4 +1,5 @@
 import sqlite from 'better-sqlite3';
+import { Cookie } from '../types';
 import { mergeDefaults } from '../utils';
 
 import { decrypt, decryptWindows } from './decrypt';
@@ -70,4 +71,53 @@ export async function getChromeCookie(
   }
 
   throw new Error(`Platform ${process.platform} is not supported`);
+}
+
+export async function listChromeCookies(
+  options?: Partial<GetChromeCookiesOptions>,
+): Promise<Cookie[]> {
+  const config = mergeDefaults(defaultOptions, options);
+  const path = getPath(config.profile);
+
+  const db = sqlite(path, { readonly: true, fileMustExist: true });
+  const statement = db.prepare(
+    `SELECT host_key, path, is_secure, expires_utc, name, value, encrypted_value, creation_utc, is_httponly, has_expires, is_persistent FROM cookies`,
+  );
+  const cookies: ChromeCookie[] = statement.all();
+
+  const decryptedCookies = await Promise.all(
+    cookies.map(async (cookie): Promise<Cookie> => {
+      if (cookie.value)
+        return {
+          name: cookie.name,
+          host: cookie.host_key,
+          path: cookie.path,
+          value: cookie.value,
+        };
+      if (process.platform === 'darwin' || process.platform === 'linux') {
+        const iterations = getIterations();
+        const derivedKey = await getDerivedKey(KEYLENGTH, iterations);
+        const value = decrypt(derivedKey, cookie.encrypted_value, KEYLENGTH);
+        return {
+          name: cookie.name,
+          host: cookie.host_key,
+          path: cookie.path,
+          value,
+        };
+      }
+
+      if (process.platform === 'win32') {
+        const value = decryptWindows(cookie.encrypted_value);
+        return {
+          name: cookie.name,
+          host: cookie.host_key,
+          path: cookie.path,
+          value,
+        };
+      }
+      throw new Error('Failed to decrypt cookie');
+    }),
+  );
+
+  return decryptedCookies;
 }

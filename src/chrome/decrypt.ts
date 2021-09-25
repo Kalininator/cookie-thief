@@ -17,7 +17,7 @@ export function decrypt(
   let decoded = decipher.update(data);
 
   const final = decipher.final();
-  final.copy(decoded, decoded.length - 1);
+  final.copy(decoded, decoded.length ? decoded.length - 1 : 0);
 
   const padding = decoded[decoded.length - 1];
   if (padding) {
