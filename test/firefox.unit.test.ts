@@ -1,6 +1,6 @@
 import * as sqlite from 'better-sqlite3';
 import { homedir } from 'os';
-import { getCookie, getFirefoxCookie, Browser } from '../src';
+import { getCookie, getFirefoxCookie, Browser, listCookies } from '../src';
 
 jest.mock('fs', () => ({
   readFileSync: jest.fn().mockReturnValue(`[Profile1]
@@ -19,6 +19,14 @@ jest.mock('better-sqlite3', () =>
   jest.fn().mockReturnValue({
     prepare: jest.fn().mockReturnValue({
       get: jest.fn().mockReturnValue({ value: 'foo' }),
+      all: jest.fn().mockReturnValue([
+        {
+          name: 'foo',
+          value: 'foo',
+          host: '.domain.com',
+          path: '/',
+        },
+      ]),
     }),
   }),
 );
@@ -48,6 +56,25 @@ describe('firefox get cookie', () => {
           cookieName: 'some-cookie',
         }),
       ).toEqual('foo');
+      expect(sqlite).toHaveBeenCalledWith(
+        `${homedir()}/Library/Application Support/Firefox/Profiles/tfhz7h6q.default-release/cookies.sqlite`,
+        { fileMustExist: true, readonly: true },
+      );
+    });
+
+    it('should list cookies correctly', async () => {
+      expect(
+        await listCookies({
+          browser: Browser.Firefox,
+        }),
+      ).toEqual([
+        {
+          name: 'foo',
+          value: 'foo',
+          host: '.domain.com',
+          path: '/',
+        },
+      ]);
       expect(sqlite).toHaveBeenCalledWith(
         `${homedir()}/Library/Application Support/Firefox/Profiles/tfhz7h6q.default-release/cookies.sqlite`,
         { fileMustExist: true, readonly: true },
