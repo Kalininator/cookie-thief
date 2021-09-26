@@ -1,6 +1,6 @@
 {
   "name": "cookie-thief",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "Steal browser cookies",
   "main": "./lib/index.js",
   "author": "Alex Kalinin (https://kalinin.uk)",

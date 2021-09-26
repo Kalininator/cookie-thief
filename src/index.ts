@@ -1,9 +1,19 @@
-import { GetChromeCookiesOptions, getChromeCookie } from './chrome';
-import { GetFirefoxCookieOptions, getFirefoxCookie } from './firefox';
+import {
+  GetChromeCookiesOptions,
+  getChromeCookie,
+  listChromeCookies,
+} from './chrome';
+import {
+  GetFirefoxCookieOptions,
+  getFirefoxCookie,
+  listFirefoxCookies,
+} from './firefox';
+import { Cookie } from './types';
 import { assertUnreachable } from './utils';
 
 export * from './chrome';
 export * from './firefox';
+export * from './types';
 
 export enum Browser {
   Firefox = 'firefox',
@@ -38,6 +48,29 @@ export async function getCookie(
       return getFirefoxCookie(config.url, config.cookieName, config.options);
     case Browser.Chrome:
       return getChromeCookie(config.url, config.cookieName, config.options);
+    default:
+      return assertUnreachable(config);
+  }
+}
+
+export interface ListFirefoxCookieConfig {
+  browser: Browser.Firefox;
+  options?: Partial<GetFirefoxCookieOptions>;
+}
+
+export interface ListChromeCookieConfig {
+  browser: Browser.Chrome;
+  options?: Partial<GetChromeCookiesOptions>;
+}
+
+export async function listCookies(
+  config: ListFirefoxCookieConfig | ListChromeCookieConfig,
+): Promise<Cookie[]> {
+  switch (config.browser) {
+    case Browser.Firefox:
+      return listFirefoxCookies(config.options);
+    case Browser.Chrome:
+      return listChromeCookies(config.options);
     default:
       return assertUnreachable(config);
   }
