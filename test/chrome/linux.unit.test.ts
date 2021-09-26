@@ -1,4 +1,4 @@
-import { Browser, getCookie } from '../../src';
+import { Browser, getCookie, listCookies } from '../../src';
 import { mockPlatform, restorePlatform } from '../util';
 
 jest.mock('better-sqlite3', () =>
@@ -7,6 +7,14 @@ jest.mock('better-sqlite3', () =>
       get: jest.fn().mockReturnValue({
         encrypted_value: Buffer.from('1MNujnd6tlf09xoB4tvBLQ==', 'base64'),
       }),
+      all: jest.fn().mockReturnValue([
+        {
+          name: 'foo',
+          path: '/',
+          host_key: '.domain.com',
+          encrypted_value: Buffer.from('1MNujnd6tlf09xoB4tvBLQ==', 'base64'),
+        },
+      ]),
     }),
   }),
 );
@@ -32,5 +40,20 @@ describe('chrome - linux', () => {
     });
 
     expect(res).toEqual('bar');
+  });
+
+  it('lists and decrypts linux cookies', async () => {
+    const res = await listCookies({
+      browser: Browser.Chrome,
+    });
+
+    expect(res).toEqual([
+      {
+        name: 'foo',
+        path: '/',
+        host: '.domain.com',
+        value: 'bar',
+      },
+    ]);
   });
 });
