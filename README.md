@@ -27,7 +27,7 @@ yarn add cookie-thief
 ### Google Chrome
 
 ```javascript
-const { getCookie, Browser } = require('cookie-thief')
+const { getCookie, listCookies, Browser } = require('cookie-thief')
 
 // Get a cookie from chrome browser for domain .github.com, searching for cookie named 'dotcom_user'
 const cookie = await getCookie({
@@ -41,6 +41,21 @@ const cookie = await getCookie({
 console.log(cookie);
 // Will be a string if cookie is successfully found
 // Will be undefined if not found
+
+const cookies = await listCookies({
+  browser: Browser.Chrome,
+});
+console.log(cookies);
+// Array of cookies
+//[
+//  {
+//    name: 'cookie name here',
+//    value: 'decrypted cookie content here',
+//    host: 'hostname of cookie here',
+//    path: 'path of cookie here'
+//  }
+//]
+
 ```
 
 ### Firefox
@@ -60,6 +75,20 @@ const cookie = await getCookie({
 console.log(cookie);
 // Will be a string if cookie is successfully found
 // Will be undefined if not found
+
+const cookies = await listCookies({
+  browser: Browser.Firefox,
+});
+console.log(cookies);
+// Array of cookies
+//[
+//  {
+//    name: 'cookie name here',
+//    value: 'decrypted cookie content here',
+//    host: 'hostname of cookie here',
+//    path: 'path of cookie here'
+//  }
+//]
 ```
 
 ## Limitations
