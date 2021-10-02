@@ -29,6 +29,7 @@
   },
   "scripts": {
     "build": "npm run clean:some && tsc -p .",
+    "newcov": "jest --coverage --changedSince=master",
     "publish-package": "npm run build && npm publish",
     "test": "jest",
     "test:watch": "jest --watch",
