@@ -32,7 +32,7 @@ const { getCookie, listCookies, Browser } = require('cookie-thief')
 // Get a cookie from chrome browser for domain .github.com, searching for cookie named 'dotcom_user'
 const cookie = await getCookie({
   browser: Browser.Chrome,
-  url: 'https://github.com',
+  domain: 'github.com',
   cookieName: 'dotcom_user',
   options: {
     profile: 'Default',
@@ -66,7 +66,7 @@ const { getCookie, Browser } = require('cookie-thief')
 // Get a cookie from chrome browser for domain .github.com, searching for cookie named 'dotcom_user'
 const cookie = await getCookie({
   browser: Browser.Firefox,
-  url: 'https://github.com',
+  domain: 'github.com',
   cookieName: 'dotcom_user',
   options: {
     profile: 'default-release',

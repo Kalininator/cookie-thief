@@ -24,7 +24,7 @@ export enum Browser {
 
 interface BaseGetCookieConfig {
   browser: Browser;
-  url: string;
+  domain: string;
   cookieName: string;
 }
 
@@ -47,9 +47,9 @@ export async function getCookie(
 ): Promise<string | undefined> {
   switch (config.browser) {
     case Browser.Firefox:
-      return getFirefoxCookie(config.url, config.cookieName, config.options);
+      return getFirefoxCookie(config.domain, config.cookieName, config.options);
     case Browser.Chrome:
-      return getChromeCookie(config.url, config.cookieName, config.options);
+      return getChromeCookie(config.domain, config.cookieName, config.options);
     default:
       return assertUnreachable(config);
   }

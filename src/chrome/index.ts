@@ -6,7 +6,7 @@ import { ChromeCookieDatabase } from './ChromeCookieDatabase';
 
 import { decrypt, decryptWindows } from './decrypt';
 import { getDerivedKey } from './getDerivedKey';
-import { getDomain, getIterations, getCookiesPath, getPath } from './util';
+import { getIterations, getCookiesPath, getPath } from './util';
 
 const KEYLENGTH = 16;
 
@@ -22,14 +22,12 @@ const defaultOptions: GetChromeCookiesOptions = {
  * @deprecated Replaced by getCookie
  */
 export async function getChromeCookie(
-  url: string,
+  domain: string,
   cookieName: string,
   options?: Partial<GetChromeCookiesOptions>,
 ): Promise<string | undefined> {
   const config = mergeDefaults(defaultOptions, options);
   const path = getCookiesPath(config.profile);
-  const domain = getDomain(url);
-
   const db = new ChromeCookieDatabase(path);
 
   // const cookie = tryGetCookie(path, domain, cookieName);

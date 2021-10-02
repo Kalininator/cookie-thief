@@ -1,24 +1,6 @@
 import { homedir } from 'os';
-import { getDomain, getIterations, getCookiesPath, getPath } from './util';
+import { getIterations, getCookiesPath, getPath } from './util';
 import { mockPlatform, restorePlatform } from '../../test/util';
-
-describe('getDomain', () => {
-  it('should extract domain from github.com', () => {
-    expect(getDomain('https://github.com')).toEqual('github.com');
-  });
-
-  it('should extract domain from https://some.web.site.com/some/page', () => {
-    expect(getDomain('https://some.web.site.com/some/page')).toEqual(
-      'site.com',
-    );
-  });
-
-  it('should fail to extract domain', () => {
-    expect(() => getDomain('foo')).toThrowError(
-      'Failed to extract domain from URL foo',
-    );
-  });
-});
 
 describe('getPath', () => {
   afterEach(() => {

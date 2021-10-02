@@ -35,7 +35,7 @@ describe('chrome - linux', () => {
   it('gets and decrypts linux cookie', async () => {
     const res = await getCookie({
       browser: Browser.Chrome,
-      url: 'https://someUrl.com',
+      domain: '.someUrl.com',
       cookieName: 'foo',
     });
 

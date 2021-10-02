@@ -66,7 +66,7 @@ describe('firefox get cookie', () => {
       expect(
         await getCookie({
           browser: Browser.Firefox,
-          url: 'https://some.url',
+          domain: '.some.url',
           cookieName: 'some-cookie',
         }),
       ).toEqual('foo');
@@ -116,7 +116,7 @@ describe('firefox get cookie', () => {
       expect(
         await getCookie({
           browser: Browser.Firefox,
-          url: 'https://some.url',
+          domain: '.some.url',
           cookieName: 'some-cookie',
         }),
       ).toEqual('foo');
@@ -151,7 +151,7 @@ describe('firefox get cookie', () => {
       expect(
         await getCookie({
           browser: Browser.Firefox,
-          url: 'https://some.url',
+          domain: '.some.url',
           cookieName: 'some-cookie',
         }),
       ).toEqual('foo');
@@ -182,7 +182,7 @@ describe('firefox get cookie', () => {
       await expect(
         getCookie({
           browser: Browser.Firefox,
-          url: 'https://someurl.com',
+          domain: '.some.url',
           cookieName: 'some-cookie',
         }),
       ).rejects.toThrow('Platform freebsd is not supported');

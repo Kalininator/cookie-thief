@@ -2,7 +2,6 @@ import { readFileSync } from 'fs';
 import { homedir } from 'os';
 import { join } from 'path';
 import * as ini from 'ini';
-import { getDomain } from 'tldjs';
 import { mergeDefaults } from '../utils';
 import { FirefoxCookieDatabase } from './FirefoxCookieDatabase';
 import { Cookie } from '../types';
@@ -65,13 +64,11 @@ export async function listFirefoxProfiles(): Promise<string[]> {
  */
 
 export async function getFirefoxCookie(
-  url: string,
+  domain: string,
   cookieName: string,
   options?: Partial<GetFirefoxCookieOptions>,
 ): Promise<string | undefined> {
   const config = mergeDefaults(defaultOptions, options);
-  const domain = getDomain(url);
-  if (!domain) throw new Error('Could not extract domain from URL');
   const cookieFilePath = getCookieFilePath(config.profile);
   const db = new FirefoxCookieDatabase(cookieFilePath);
   return db.findCookie(cookieName, domain);
