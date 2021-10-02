@@ -1,6 +1,7 @@
 import * as sqlite from 'better-sqlite3';
 import { homedir } from 'os';
-import { getCookie, Browser, listCookies } from '../src';
+import { getCookie, Browser, listCookies, listProfiles } from '../src';
+import { mockPlatform, restorePlatform } from './util';
 
 jest.mock('fs', () => ({
   readFileSync: jest.fn().mockReturnValue(`[Profile1]
@@ -30,6 +31,19 @@ jest.mock('better-sqlite3', () =>
     }),
   }),
 );
+
+describe('firefox list profiles', () => {
+  it('should return  correct profiles', async () => {
+    mockPlatform('linux');
+
+    expect(await listProfiles(Browser.Firefox)).toEqual([
+      'default',
+      'default-release',
+    ]);
+
+    restorePlatform();
+  });
+});
 
 describe('firefox get cookie', () => {
   describe('macos', () => {
