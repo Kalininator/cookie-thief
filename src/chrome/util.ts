@@ -7,7 +7,7 @@ export function getDomain(url: string): string {
   throw new Error(`Failed to extract domain from URL ${url}`);
 }
 
-export function getPath(profile: string): string {
+export function getCookiesPath(profile: string): string {
   if (process.platform === 'darwin')
     return `${homedir()}/Library/Application Support/Google/Chrome/${profile}/Cookies`;
   if (process.platform === 'linux')

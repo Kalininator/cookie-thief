@@ -1,5 +1,5 @@
 import { homedir } from 'os';
-import { getDomain, getIterations, getPath } from './util';
+import { getDomain, getIterations, getCookiesPath } from './util';
 import { mockPlatform, restorePlatform } from '../../test/util';
 
 describe('getDomain', () => {
@@ -20,7 +20,7 @@ describe('getDomain', () => {
   });
 });
 
-describe('getPath', () => {
+describe('getCookiesPath', () => {
   afterEach(() => {
     restorePlatform();
   });
@@ -28,7 +28,7 @@ describe('getPath', () => {
   it('should get correct windows path', async () => {
     mockPlatform('win32');
 
-    expect(getPath('Default')).toEqual(
+    expect(getCookiesPath('Default')).toEqual(
       `${homedir()}\\AppData\\Local\\Google\\Chrome\\User Data\\Default\\Cookies`,
     );
   });
@@ -36,7 +36,7 @@ describe('getPath', () => {
   it('should get correct macos path', async () => {
     mockPlatform('darwin');
 
-    expect(getPath('Default')).toEqual(
+    expect(getCookiesPath('Default')).toEqual(
       `${homedir()}/Library/Application Support/Google/Chrome/Default/Cookies`,
     );
   });
@@ -44,7 +44,7 @@ describe('getPath', () => {
   it('should get correct linux path', async () => {
     mockPlatform('linux');
 
-    expect(getPath('Default')).toEqual(
+    expect(getCookiesPath('Default')).toEqual(
       `${homedir()}/.config/google-chrome/Default/Cookies`,
     );
   });
@@ -52,7 +52,7 @@ describe('getPath', () => {
   it('should throw if invalid os', () => {
     mockPlatform('freebsd');
 
-    expect(() => getPath('Default')).toThrow(
+    expect(() => getCookiesPath('Default')).toThrow(
       'Platform freebsd is not supported',
     );
   });
