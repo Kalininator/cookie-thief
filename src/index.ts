@@ -7,6 +7,7 @@ import {
   GetFirefoxCookieOptions,
   getFirefoxCookie,
   listFirefoxCookies,
+  listFirefoxProfiles,
 } from './firefox';
 import { Cookie } from './types';
 import { assertUnreachable } from './utils';
@@ -73,5 +74,14 @@ export async function listCookies(
       return listChromeCookies(config.options);
     default:
       return assertUnreachable(config);
+  }
+}
+
+export async function listProfiles(browser: Browser): Promise<string[]> {
+  switch (browser) {
+    case Browser.Firefox:
+      return listFirefoxProfiles();
+    default:
+      return assertUnreachable(browser);
   }
 }
