@@ -1,7 +1,7 @@
 import { CookieProvider } from '../CookieProvider';
 import { Cookie } from '../types';
 import { ChromeCookie, ChromeCookieRepository } from './ChromeCookieRepository';
-import {decrypt} from './decrypt';
+import { decrypt } from './decrypt';
 import { getMacDerivedKey } from './getDerivedKey';
 
 const KEYLENGTH = 16;
