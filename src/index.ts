@@ -8,8 +8,8 @@ import {
   GetFirefoxCookieOptions,
   getFirefoxCookie,
   listFirefoxCookies,
-  listFirefoxProfiles,
-} from './firefox';
+  listFirefoxProfiles
+} from "./getUserDirectory";
 import { Cookie } from './types';
 import { assertUnreachable } from './utils';
 
@@ -44,7 +44,7 @@ export function listSupportedBrowsers(): Browser[] {
 
 export async function getCookie(
   config: GetFirefoxCookieConfig | GetChromeCookieConfig,
-): Promise<string | undefined> {
+): Promise<Cookie | undefined> {
   switch (config.browser) {
     case Browser.Firefox:
       return getFirefoxCookie(config.domain, config.cookieName, config.options);

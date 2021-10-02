@@ -1,44 +1,9 @@
-import { readFileSync } from 'fs';
-import { homedir } from 'os';
 import { join } from 'path';
-import * as ini from 'ini';
 import { mergeDefaults } from '../utils';
 import { FirefoxCookieDatabase } from './FirefoxCookieDatabase';
 import { Cookie } from '../types';
-
-function getUserDirectory(): string {
-  switch (process.platform) {
-    case 'darwin':
-      return join(homedir(), '/Library/Application Support/Firefox');
-    case 'linux':
-      return join(homedir(), '/.mozilla/firefox');
-    case 'win32':
-      return join(process.env.APPDATA!, '/Mozilla/Firefox');
-    default:
-      throw new Error(`Platform ${process.platform} is not supported`);
-  }
-}
-
-type FirefoxProfile = {
-  Name: string;
-  IsRelative: number;
-  Path: string;
-  Default?: number;
-};
-
-function getProfiles(): FirefoxProfile[] {
-  const userDirectory = getUserDirectory();
-  const fileData = readFileSync(join(userDirectory, 'profiles.ini'), {
-    encoding: 'utf8',
-  });
-
-  const iniData = ini.parse(fileData);
-  return Object.keys(iniData)
-    .filter((key) => {
-      return typeof key === 'string' && key.match(/^Profile/);
-    })
-    .map((key) => iniData[key]);
-}
+import { getProfiles, getUserDirectory } from './profiles';
+import { FirefoxCookieProvider } from './FirefoxCookieProvider';
 
 function getCookieFilePath(profile: string): string {
   const profiles = getProfiles();
@@ -59,26 +24,26 @@ export async function listFirefoxProfiles(): Promise<string[]> {
   return getProfiles().map((p) => p.Name);
 }
 
-/**
- * @deprecated Replaced by getCookie
- */
+function getFirefoxCookieProvider(profile: string): FirefoxCookieProvider {
+  const cookieFilePath = getCookieFilePath(profile);
+  const db = new FirefoxCookieDatabase(cookieFilePath);
+  return new FirefoxCookieProvider(db);
+}
 
 export async function getFirefoxCookie(
   domain: string,
   cookieName: string,
   options?: Partial<GetFirefoxCookieOptions>,
-): Promise<string | undefined> {
+): Promise<Cookie | undefined> {
   const config = mergeDefaults(defaultOptions, options);
-  const cookieFilePath = getCookieFilePath(config.profile);
-  const db = new FirefoxCookieDatabase(cookieFilePath);
-  return db.findCookie(cookieName, domain);
+  const cookieRepo = getFirefoxCookieProvider(config.profile);
+  return cookieRepo.getCookie(domain, cookieName);
 }
 
 export async function listFirefoxCookies(
   options?: Partial<GetFirefoxCookieOptions>,
 ): Promise<Cookie[]> {
   const config = mergeDefaults(defaultOptions, options);
-  const cookieFilePath = getCookieFilePath(config.profile);
-  const db = new FirefoxCookieDatabase(cookieFilePath);
-  return db.listCookies();
+  const cookieRepo = getFirefoxCookieProvider(config.profile);
+  return cookieRepo.listCookies();
 }
