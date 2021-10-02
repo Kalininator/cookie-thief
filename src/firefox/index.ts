@@ -56,6 +56,10 @@ const defaultOptions: GetFirefoxCookieOptions = {
   profile: 'default-release',
 };
 
+export async function listFirefoxProfiles(): Promise<string[]> {
+  return getProfiles().map((p) => p.Name);
+}
+
 /**
  * @deprecated Replaced by getCookie
  */

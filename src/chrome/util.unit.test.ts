@@ -1,5 +1,5 @@
 import { homedir } from 'os';
-import { getDomain, getIterations, getPath } from './util';
+import { getDomain, getIterations, getCookiesPath, getPath } from './util';
 import { mockPlatform, restorePlatform } from '../../test/util';
 
 describe('getDomain', () => {
@@ -28,7 +28,41 @@ describe('getPath', () => {
   it('should get correct windows path', async () => {
     mockPlatform('win32');
 
-    expect(getPath('Default')).toEqual(
+    expect(getPath()).toEqual(
+      `${homedir()}\\AppData\\Local\\Google\\Chrome\\User Data`,
+    );
+  });
+
+  it('should get correct macos path', async () => {
+    mockPlatform('darwin');
+
+    expect(getPath()).toEqual(
+      `${homedir()}/Library/Application Support/Google/Chrome`,
+    );
+  });
+
+  it('should get correct linux path', async () => {
+    mockPlatform('linux');
+
+    expect(getPath()).toEqual(`${homedir()}/.config/google-chrome`);
+  });
+
+  it('should throw if invalid os', () => {
+    mockPlatform('freebsd');
+
+    expect(() => getPath()).toThrow('Platform freebsd is not supported');
+  });
+});
+
+describe('getCookiesPath', () => {
+  afterEach(() => {
+    restorePlatform();
+  });
+
+  it('should get correct windows path', async () => {
+    mockPlatform('win32');
+
+    expect(getCookiesPath('Default')).toEqual(
       `${homedir()}\\AppData\\Local\\Google\\Chrome\\User Data\\Default\\Cookies`,
     );
   });
@@ -36,7 +70,7 @@ describe('getPath', () => {
   it('should get correct macos path', async () => {
     mockPlatform('darwin');
 
-    expect(getPath('Default')).toEqual(
+    expect(getCookiesPath('Default')).toEqual(
       `${homedir()}/Library/Application Support/Google/Chrome/Default/Cookies`,
     );
   });
@@ -44,7 +78,7 @@ describe('getPath', () => {
   it('should get correct linux path', async () => {
     mockPlatform('linux');
 
-    expect(getPath('Default')).toEqual(
+    expect(getCookiesPath('Default')).toEqual(
       `${homedir()}/.config/google-chrome/Default/Cookies`,
     );
   });
@@ -52,7 +86,7 @@ describe('getPath', () => {
   it('should throw if invalid os', () => {
     mockPlatform('freebsd');
 
-    expect(() => getPath('Default')).toThrow(
+    expect(() => getCookiesPath('Default')).toThrow(
       'Platform freebsd is not supported',
     );
   });

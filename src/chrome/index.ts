@@ -1,10 +1,12 @@
+import { existsSync, readdirSync } from 'fs';
+import { join } from 'path';
 import { Cookie } from '../types';
 import { mergeDefaults } from '../utils';
 import { ChromeCookieDatabase } from './ChromeCookieDatabase';
 
 import { decrypt, decryptWindows } from './decrypt';
 import { getDerivedKey } from './getDerivedKey';
-import { getDomain, getIterations, getPath } from './util';
+import { getDomain, getIterations, getCookiesPath, getPath } from './util';
 
 const KEYLENGTH = 16;
 
@@ -25,7 +27,7 @@ export async function getChromeCookie(
   options?: Partial<GetChromeCookiesOptions>,
 ): Promise<string | undefined> {
   const config = mergeDefaults(defaultOptions, options);
-  const path = getPath(config.profile);
+  const path = getCookiesPath(config.profile);
   const domain = getDomain(url);
 
   const db = new ChromeCookieDatabase(path);
@@ -48,11 +50,18 @@ export async function getChromeCookie(
   throw new Error(`Platform ${process.platform} is not supported`);
 }
 
+export async function listChromeProfiles(): Promise<string[]> {
+  const path = getPath();
+  return readdirSync(path).filter(
+    (f) => f !== 'System Profile' && existsSync(join(path, f, 'Preferences')),
+  );
+}
+
 export async function listChromeCookies(
   options?: Partial<GetChromeCookiesOptions>,
 ): Promise<Cookie[]> {
   const config = mergeDefaults(defaultOptions, options);
-  const path = getPath(config.profile);
+  const path = getCookiesPath(config.profile);
   const db = new ChromeCookieDatabase(path);
   const cookies = db.listCookies();
   const decryptedCookies = await Promise.all(
