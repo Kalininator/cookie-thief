@@ -1,10 +1,12 @@
+import { existsSync, readdirSync, readFileSync } from 'fs';
+import { join } from 'path';
 import { Cookie } from '../types';
 import { mergeDefaults } from '../utils';
 import { ChromeCookieDatabase } from './ChromeCookieDatabase';
 
 import { decrypt, decryptWindows } from './decrypt';
 import { getDerivedKey } from './getDerivedKey';
-import { getDomain, getIterations, getCookiesPath } from './util';
+import { getDomain, getIterations, getCookiesPath, getPath } from './util';
 
 const KEYLENGTH = 16;
 
@@ -46,6 +48,21 @@ export async function getChromeCookie(
   }
 
   throw new Error(`Platform ${process.platform} is not supported`);
+}
+
+export async function listChromeProfiles(): Promise<string[]> {
+  const path = getPath();
+  return readdirSync(path)
+    .filter(
+      (f) => f !== 'System Profile' && existsSync(join(path, f, 'Preferences')),
+    )
+    .map((p) => {
+      return p;
+      // const preferences = JSON.parse(
+      //   readFileSync(join(path, p, 'Preferences'), 'utf8'),
+      // );
+      // return preferences.profile.name;
+    });
 }
 
 export async function listChromeCookies(
