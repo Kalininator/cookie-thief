@@ -1,14 +1,14 @@
 import { existsSync, readdirSync } from 'fs';
 import { join } from 'path';
+import { CookieProvider } from '../CookieProvider';
 import { Cookie } from '../types';
 import { mergeDefaults } from '../utils';
 import { ChromeCookieDatabase } from './ChromeCookieDatabase';
+import { ChromeLinuxCookieProvider } from './ChromeLinuxCookieProvider';
+import { ChromeMacosCookieProvider } from './ChromeMacosCookieProvider';
+import { ChromeWindowsCookieProvider } from './ChromeWindowsCookieProvider';
 
-import { decrypt, decryptWindows } from './decrypt';
-import { getDerivedKey } from './getDerivedKey';
-import { getIterations, getCookiesPath, getPath } from './util';
-
-const KEYLENGTH = 16;
+import { getCookiesPath, getPath } from './util';
 
 export interface GetChromeCookiesOptions {
   profile: string;
@@ -18,34 +18,24 @@ const defaultOptions: GetChromeCookiesOptions = {
   profile: 'Default',
 };
 
-/**
- * @deprecated Replaced by getCookie
- */
+function getChromeCookieProvider(profile: string): CookieProvider {
+  const path = getCookiesPath(profile);
+  const db = new ChromeCookieDatabase(path);
+  if (process.platform === 'darwin') return new ChromeMacosCookieProvider(db);
+  if (process.platform === 'linux') return new ChromeLinuxCookieProvider(db);
+  if (process.platform === 'win32') return new ChromeWindowsCookieProvider(db);
+
+  throw new Error(`Platform ${process.platform} is not supported`);
+}
+
 export async function getChromeCookie(
   domain: string,
   cookieName: string,
   options?: Partial<GetChromeCookiesOptions>,
-): Promise<string | undefined> {
+): Promise<Cookie | undefined> {
   const config = mergeDefaults(defaultOptions, options);
-  const path = getCookiesPath(config.profile);
-  const db = new ChromeCookieDatabase(path);
-
-  // const cookie = tryGetCookie(path, domain, cookieName);
-  const cookie = db.findCookie(cookieName, domain);
-
-  if (!cookie) return undefined;
-
-  if (process.platform === 'darwin' || process.platform === 'linux') {
-    const iterations = getIterations();
-    const derivedKey = await getDerivedKey(KEYLENGTH, iterations);
-    return decrypt(derivedKey, cookie.encrypted_value, KEYLENGTH);
-  }
-
-  if (process.platform === 'win32') {
-    return decryptWindows(cookie.encrypted_value);
-  }
-
-  throw new Error(`Platform ${process.platform} is not supported`);
+  const provider = getChromeCookieProvider(config.profile);
+  return provider.getCookie(domain, cookieName);
 }
 
 export async function listChromeProfiles(): Promise<string[]> {
@@ -59,42 +49,6 @@ export async function listChromeCookies(
   options?: Partial<GetChromeCookiesOptions>,
 ): Promise<Cookie[]> {
   const config = mergeDefaults(defaultOptions, options);
-  const path = getCookiesPath(config.profile);
-  const db = new ChromeCookieDatabase(path);
-  const cookies = db.listCookies();
-  const decryptedCookies = await Promise.all(
-    cookies.map(async (cookie): Promise<Cookie> => {
-      if (cookie.value)
-        return {
-          name: cookie.name,
-          host: cookie.host_key,
-          path: cookie.path,
-          value: cookie.value,
-        };
-      if (process.platform === 'darwin' || process.platform === 'linux') {
-        const iterations = getIterations();
-        const derivedKey = await getDerivedKey(KEYLENGTH, iterations);
-        const value = decrypt(derivedKey, cookie.encrypted_value, KEYLENGTH);
-        return {
-          name: cookie.name,
-          host: cookie.host_key,
-          path: cookie.path,
-          value,
-        };
-      }
-
-      if (process.platform === 'win32') {
-        const value = decryptWindows(cookie.encrypted_value);
-        return {
-          name: cookie.name,
-          host: cookie.host_key,
-          path: cookie.path,
-          value,
-        };
-      }
-      throw new Error('Failed to decrypt cookie');
-    }),
-  );
-
-  return decryptedCookies;
+  const provider = getChromeCookieProvider(config.profile);
+  return provider.listCookies();
 }

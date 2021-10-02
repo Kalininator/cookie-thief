@@ -69,7 +69,7 @@ describe('firefox get cookie', () => {
           domain: '.some.url',
           cookieName: 'some-cookie',
         }),
-      ).toEqual('foo');
+      ).toEqual({ value: 'foo' });
       expect(sqlite).toHaveBeenCalledWith(
         `${homedir()}/Library/Application Support/Firefox/Profiles/tfhz7h6q.default-release/cookies.sqlite`,
         { fileMustExist: true, readonly: true },
@@ -119,7 +119,7 @@ describe('firefox get cookie', () => {
           domain: '.some.url',
           cookieName: 'some-cookie',
         }),
-      ).toEqual('foo');
+      ).toEqual({ value: 'foo' });
       expect(sqlite).toHaveBeenCalledWith(
         `${homedir()}/.mozilla/firefox/Profiles/tfhz7h6q.default-release/cookies.sqlite`,
         { fileMustExist: true, readonly: true },
@@ -154,7 +154,7 @@ describe('firefox get cookie', () => {
           domain: '.some.url',
           cookieName: 'some-cookie',
         }),
-      ).toEqual('foo');
+      ).toEqual({ value: 'foo' });
       expect(sqlite).toHaveBeenCalledWith(
         `C:/foo/Mozilla/Firefox/Profiles/tfhz7h6q.default-release/cookies.sqlite`,
         { fileMustExist: true, readonly: true },

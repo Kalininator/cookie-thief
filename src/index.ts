@@ -5,16 +5,16 @@ import {
   listChromeProfiles,
 } from './chrome';
 import {
-  GetFirefoxCookieOptions,
   getFirefoxCookie,
+  GetFirefoxCookieOptions,
   listFirefoxCookies,
-  listFirefoxProfiles
-} from "./getUserDirectory";
+  listFirefoxProfiles,
+} from './firefox';
 import { Cookie } from './types';
 import { assertUnreachable } from './utils';
 
-export * from './chrome';
-export * from './firefox';
+// export * from './chrome';
+// export * from './firefox';
 export * from './types';
 
 export enum Browser {
