@@ -1,5 +1,5 @@
 import { homedir } from 'os';
-import { getIterations, getCookiesPath, getPath } from './util';
+import { getCookiesPath, getPath } from './util';
 import { mockPlatform, restorePlatform } from '../../test/util';
 
 describe('getPath', () => {
@@ -71,27 +71,5 @@ describe('getCookiesPath', () => {
     expect(() => getCookiesPath('Default')).toThrow(
       'Platform freebsd is not supported',
     );
-  });
-});
-
-describe('getIterations', () => {
-  afterEach(restorePlatform);
-
-  it('should get correct macos iterations', async () => {
-    mockPlatform('darwin');
-
-    expect(getIterations()).toEqual(1003);
-  });
-
-  it('should get correct linux iterations', async () => {
-    mockPlatform('linux');
-
-    expect(getIterations()).toEqual(1);
-  });
-
-  it('should throw if invalid os', () => {
-    mockPlatform('win32');
-
-    expect(() => getIterations()).toThrow('Platform win32 is not supported');
   });
 });
