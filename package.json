@@ -37,8 +37,8 @@
     "publish-package": "npm run build && npm publish",
     "test": "jest",
     "test:watch": "jest --watch",
-    "clean:some": "rm -rf ./lib ./docs",
-    "clean:all": "rm -rf ./node_modules ./package-lock.json ./lib ./docs",
+    "clean:some": "rm -rf ./lib",
+    "clean:all": "rm -rf ./node_modules ./package-lock.json ./lib",
     "pr:lint": "./node_modules/eslint/bin/eslint.js 'src/**/*.ts'",
     "pr:test": "jest",
     "t": "ts-node testFile.ts"
