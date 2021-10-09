@@ -5,6 +5,10 @@ jest.mock('./decrypt', () => ({
   decrypt: jest.fn().mockResolvedValue('foo'),
 }));
 
+jest.mock('./getDerivedKey', () => ({
+  getMacDerivedKey: jest.fn().mockResolvedValue(Buffer.from('some_key')),
+}));
+
 const fakeBuffer = Buffer.from('encrypted');
 
 describe('chrome macos cookie provider', () => {
