@@ -3,11 +3,7 @@ import { Cookie } from '../types';
 import { FirefoxCookieRepository } from './FirefoxCookieRepository';
 
 export class FirefoxCookieProvider implements CookieProvider {
-  db: FirefoxCookieRepository;
-
-  constructor(db: FirefoxCookieRepository) {
-    this.db = db;
-  }
+  constructor(private db: FirefoxCookieRepository) {}
 
   async getCookie(
     domain: string,

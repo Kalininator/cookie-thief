@@ -2,11 +2,7 @@ import sqlite from 'better-sqlite3';
 import { FirefoxCookieRepository, MozCookie } from './FirefoxCookieRepository';
 
 export class FirefoxCookieDatabase implements FirefoxCookieRepository {
-  path: string;
-
-  constructor(path: string) {
-    this.path = path;
-  }
+  constructor(private path: string) {}
 
   findCookie(cookieName: string, domain: string): MozCookie | undefined {
     const db = sqlite(this.path, { readonly: true, fileMustExist: true });

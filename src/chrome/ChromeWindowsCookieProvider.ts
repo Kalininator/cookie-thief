@@ -17,11 +17,7 @@ async function toCookie(chromeCookie: ChromeCookie): Promise<Cookie> {
 }
 
 export class ChromeWindowsCookieProvider implements CookieProvider {
-  db: ChromeCookieRepository;
-
-  constructor(db: ChromeCookieRepository) {
-    this.db = db;
-  }
+  constructor(private db: ChromeCookieRepository) {}
 
   async getCookie(
     domain: string,

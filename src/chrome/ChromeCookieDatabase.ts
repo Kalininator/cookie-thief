@@ -2,16 +2,12 @@ import sqlite from 'better-sqlite3';
 import { ChromeCookie, ChromeCookieRepository } from './ChromeCookieRepository';
 
 export class ChromeCookieDatabase implements ChromeCookieRepository {
-  path: string;
-
-  constructor(path: string) {
-    this.path = path;
-  }
+  constructor(private path: string) {}
 
   findCookie(cookieName: string, domain: string): ChromeCookie | undefined {
     const db = sqlite(this.path, { readonly: true, fileMustExist: true });
     const statement = db.prepare(
-      `SELECT host_key, path, is_secure, expires_utc, name, value, encrypted_value, creation_utc, is_httponly, has_expires, is_persistent FROM cookies where host_key like '%${domain}' and name like '%${cookieName}' ORDER BY LENGTH(path) DESC, creation_utc ASC`,
+      `SELECT host_key, path, name, encrypted_value FROM cookies where host_key like '%${domain}' and name like '%${cookieName}' ORDER BY LENGTH(path) DESC, creation_utc ASC`,
     );
     return statement.get();
   }
@@ -19,7 +15,7 @@ export class ChromeCookieDatabase implements ChromeCookieRepository {
   listCookies(): ChromeCookie[] {
     const db = sqlite(this.path, { readonly: true, fileMustExist: true });
     const statement = db.prepare(
-      `SELECT host_key, path, is_secure, expires_utc, name, value, encrypted_value, creation_utc, is_httponly, has_expires, is_persistent FROM cookies`,
+      `SELECT host_key, path, name, encrypted_value FROM cookies`,
     );
     const cookies: ChromeCookie[] = statement.all();
     return cookies;
