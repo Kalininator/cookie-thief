@@ -1,9 +1,13 @@
 {
   "name": "cookie-thief",
-  "version": "0.7.0",
+  "version": "1.0.0",
   "description": "Steal browser cookies",
   "main": "./lib/index.js",
   "author": "Alex Kalinin (https://kalinin.uk)",
+  "homepage": "https://kalininator.github.io/cookie-thief/",
+  "bugs": {
+    "url": "https://github.com/Kalininator/cookie-thief/issues"
+  },
   "license": "MIT",
   "files": [
     "lib/",
