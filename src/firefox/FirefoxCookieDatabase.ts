@@ -1,27 +1,16 @@
 import sqlite from 'better-sqlite3';
+import { FirefoxCookieRepository, MozCookie } from './FirefoxCookieRepository';
 
-type MozCookie = {
-  name: string;
-  value: string;
-  host: string;
-  path: string;
-};
+export class FirefoxCookieDatabase implements FirefoxCookieRepository {
+  constructor(private path: string) {}
 
-export class FirefoxCookieDatabase {
-  path: string;
-
-  constructor(path: string) {
-    this.path = path;
-  }
-
-  findCookie(cookieName: string, domain: string): string | undefined {
+  findCookie(cookieName: string, domain: string): MozCookie | undefined {
     const db = sqlite(this.path, { readonly: true, fileMustExist: true });
 
     const statement = db.prepare(
-      `SELECT value from moz_cookies WHERE name like '${cookieName}' AND host like '%${domain}'`,
+      `SELECT name, value, host, path from moz_cookies WHERE name like '${cookieName}' AND host like '%${domain}'`,
     );
-    const res = statement.get();
-    return res?.value;
+    return statement.get();
   }
 
   listCookies(): MozCookie[] {

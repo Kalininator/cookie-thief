@@ -66,10 +66,10 @@ describe('firefox get cookie', () => {
       expect(
         await getCookie({
           browser: Browser.Firefox,
-          url: 'https://some.url',
+          domain: '.some.url',
           cookieName: 'some-cookie',
         }),
-      ).toEqual('foo');
+      ).toEqual({ value: 'foo' });
       expect(sqlite).toHaveBeenCalledWith(
         `${homedir()}/Library/Application Support/Firefox/Profiles/tfhz7h6q.default-release/cookies.sqlite`,
         { fileMustExist: true, readonly: true },
@@ -116,10 +116,10 @@ describe('firefox get cookie', () => {
       expect(
         await getCookie({
           browser: Browser.Firefox,
-          url: 'https://some.url',
+          domain: '.some.url',
           cookieName: 'some-cookie',
         }),
-      ).toEqual('foo');
+      ).toEqual({ value: 'foo' });
       expect(sqlite).toHaveBeenCalledWith(
         `${homedir()}/.mozilla/firefox/Profiles/tfhz7h6q.default-release/cookies.sqlite`,
         { fileMustExist: true, readonly: true },
@@ -151,10 +151,10 @@ describe('firefox get cookie', () => {
       expect(
         await getCookie({
           browser: Browser.Firefox,
-          url: 'https://some.url',
+          domain: '.some.url',
           cookieName: 'some-cookie',
         }),
-      ).toEqual('foo');
+      ).toEqual({ value: 'foo' });
       expect(sqlite).toHaveBeenCalledWith(
         `C:/foo/Mozilla/Firefox/Profiles/tfhz7h6q.default-release/cookies.sqlite`,
         { fileMustExist: true, readonly: true },
@@ -182,7 +182,7 @@ describe('firefox get cookie', () => {
       await expect(
         getCookie({
           browser: Browser.Firefox,
-          url: 'https://someurl.com',
+          domain: '.some.url',
           cookieName: 'some-cookie',
         }),
       ).rejects.toThrow('Platform freebsd is not supported');

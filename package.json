@@ -1,9 +1,13 @@
 {
   "name": "cookie-thief",
-  "version": "0.7.0",
+  "version": "1.0.0",
   "description": "Steal browser cookies",
   "main": "./lib/index.js",
   "author": "Alex Kalinin (https://kalinin.uk)",
+  "homepage": "https://kalininator.github.io/cookie-thief/",
+  "bugs": {
+    "url": "https://github.com/Kalininator/cookie-thief/issues"
+  },
   "license": "MIT",
   "files": [
     "lib/",
@@ -33,8 +37,8 @@
     "publish-package": "npm run build && npm publish",
     "test": "jest",
     "test:watch": "jest --watch",
-    "clean:some": "rm -rf ./lib ./docs",
-    "clean:all": "rm -rf ./node_modules ./package-lock.json ./lib ./docs",
+    "clean:some": "rm -rf ./lib",
+    "clean:all": "rm -rf ./node_modules ./package-lock.json ./lib",
     "pr:lint": "./node_modules/eslint/bin/eslint.js 'src/**/*.ts'",
     "pr:test": "jest",
     "t": "ts-node testFile.ts"
@@ -67,8 +71,7 @@
   },
   "dependencies": {
     "better-sqlite3": "^7.4.3",
-    "ini": "^2.0.0",
-    "tldjs": "^2.3.1"
+    "ini": "^2.0.0"
   },
   "optionalDependencies": {
     "keytar": "^7.7.0",

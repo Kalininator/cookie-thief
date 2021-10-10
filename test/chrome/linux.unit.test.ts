@@ -6,6 +6,9 @@ jest.mock('better-sqlite3', () =>
     prepare: jest.fn().mockReturnValue({
       get: jest.fn().mockReturnValue({
         encrypted_value: Buffer.from('1MNujnd6tlf09xoB4tvBLQ==', 'base64'),
+        name: 'foo',
+        path: '/',
+        host_key: '.someUrl.com',
       }),
       all: jest.fn().mockReturnValue([
         {
@@ -35,11 +38,16 @@ describe('chrome - linux', () => {
   it('gets and decrypts linux cookie', async () => {
     const res = await getCookie({
       browser: Browser.Chrome,
-      url: 'https://someUrl.com',
+      domain: '.someUrl.com',
       cookieName: 'foo',
     });
 
-    expect(res).toEqual('bar');
+    expect(res).toEqual({
+      value: 'bar',
+      host: '.someUrl.com',
+      path: '/',
+      name: 'foo',
+    });
   });
 
   it('lists and decrypts linux cookies', async () => {

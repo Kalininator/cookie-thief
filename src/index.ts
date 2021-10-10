@@ -5,16 +5,16 @@ import {
   listChromeProfiles,
 } from './chrome';
 import {
-  GetFirefoxCookieOptions,
   getFirefoxCookie,
+  GetFirefoxCookieOptions,
   listFirefoxCookies,
   listFirefoxProfiles,
 } from './firefox';
 import { Cookie } from './types';
 import { assertUnreachable } from './utils';
 
-export * from './chrome';
-export * from './firefox';
+// export * from './chrome';
+// export * from './firefox';
 export * from './types';
 
 export enum Browser {
@@ -24,7 +24,7 @@ export enum Browser {
 
 interface BaseGetCookieConfig {
   browser: Browser;
-  url: string;
+  domain: string;
   cookieName: string;
 }
 
@@ -44,12 +44,12 @@ export function listSupportedBrowsers(): Browser[] {
 
 export async function getCookie(
   config: GetFirefoxCookieConfig | GetChromeCookieConfig,
-): Promise<string | undefined> {
+): Promise<Cookie | undefined> {
   switch (config.browser) {
     case Browser.Firefox:
-      return getFirefoxCookie(config.url, config.cookieName, config.options);
+      return getFirefoxCookie(config.domain, config.cookieName, config.options);
     case Browser.Chrome:
-      return getChromeCookie(config.url, config.cookieName, config.options);
+      return getChromeCookie(config.domain, config.cookieName, config.options);
     default:
       return assertUnreachable(config);
   }

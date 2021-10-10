@@ -30,7 +30,7 @@ describe('ChromeCookieDatabase', () => {
     });
     expect(getFn).toHaveBeenCalled();
     expect(prepareFn).toHaveBeenCalledWith(
-      `SELECT host_key, path, is_secure, expires_utc, name, value, encrypted_value, creation_utc, is_httponly, has_expires, is_persistent FROM cookies where host_key like '%.domain.com' and name like '%someCookie' ORDER BY LENGTH(path) DESC, creation_utc ASC`,
+      `SELECT host_key, path, name, encrypted_value FROM cookies where host_key like '%.domain.com' and name like '%someCookie' ORDER BY LENGTH(path) DESC, creation_utc ASC`,
     );
     expect(sqlite as unknown as jest.Mock).toHaveBeenCalledWith(path, {
       readonly: true,
@@ -68,7 +68,7 @@ describe('ChromeCookieDatabase', () => {
     ]);
     expect(allFn).toHaveBeenCalled();
     expect(prepareFn).toHaveBeenCalledWith(
-      `SELECT host_key, path, is_secure, expires_utc, name, value, encrypted_value, creation_utc, is_httponly, has_expires, is_persistent FROM cookies`,
+      `SELECT host_key, path, name, encrypted_value FROM cookies`,
     );
     expect(sqlite as unknown as jest.Mock).toHaveBeenCalledWith(path, {
       readonly: true,

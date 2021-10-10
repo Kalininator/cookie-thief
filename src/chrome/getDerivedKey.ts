@@ -6,7 +6,7 @@ const promisedPbkdf2 = promisify(crypto.pbkdf2);
 
 const SALT = 'saltysalt';
 
-async function getMacDerivedKey(
+export async function getMacDerivedKey(
   keyLength: number,
   iterations: number,
 ): Promise<Buffer> {
