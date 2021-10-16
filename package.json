@@ -38,6 +38,7 @@
     "newcov": "jest --coverage --changedSince=master",
     "publish-package": "npm run build && npm publish",
     "test": "jest",
+    "coverage": "jest --coverage",
     "test:watch": "jest --watch",
     "clean:some": "rm -rf ./lib",
     "clean:all": "rm -rf ./node_modules ./package-lock.json ./lib",
