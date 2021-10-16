@@ -32,6 +32,8 @@
     "url": "https://github.com/Kalininator/cookie-thief.git"
   },
   "scripts": {
+    "_postinstall": "node ./node_modules/platform-dependent-modules/cli.js",
+    "postinstall": "npm run _postinstall",
     "build": "npm run clean:some && tsc -p .",
     "newcov": "jest --coverage --changedSince=master",
     "publish-package": "npm run build && npm publish",
@@ -71,10 +73,21 @@
   },
   "dependencies": {
     "better-sqlite3": "^7.4.3",
-    "ini": "^2.0.0"
+    "ini": "^2.0.0",
+    "platform-dependent-modules": "^0.0.14"
   },
   "optionalDependencies": {
     "keytar": "^7.7.0",
     "win-dpapi": "^1.1.0"
+  },
+  "config": {
+    "platformDependentModules": {
+      "win32": [
+        "win-dpapi@^1.1.0"
+      ],
+      "darwin": [
+        "keytar@^7.7.0"
+      ]
+    }
   }
 }
