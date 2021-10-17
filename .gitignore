@@ -1,5 +1,4 @@
 lib/
 node_modules/
-package-lock.json
 .DS_Store
 coverage/
