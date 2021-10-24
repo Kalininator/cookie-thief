@@ -1,6 +1,7 @@
 import { createCipheriv } from 'crypto';
-import { decrypt } from './decrypt';
+import { decrypt, decryptWindows } from './decrypt';
 import { getLinuxDerivedKey } from './getDerivedKey';
+import { getDpapi } from './optionalDependencies';
 import { mockPlatform, restorePlatform } from '../../test/util';
 
 describe('chrome decrypt - linux', () => {
@@ -24,5 +25,39 @@ describe('chrome decrypt - linux', () => {
     const res = decrypt(dk, concatted, 16);
 
     expect(res).toEqual('bar');
+  });
+});
+
+jest.mock('./optionalDependencies', () => ({
+  getDpapi: jest.fn(),
+}));
+
+describe('chrome decrypt - window', () => {
+  beforeAll(() => {
+    mockPlatform('win32');
+  });
+
+  afterAll(() => {
+    restorePlatform();
+  });
+
+  it('should decrypt current user cookie', async () => {
+    const unprotectDataFn = jest.fn().mockReturnValue(Buffer.from('foo'));
+
+    (getDpapi as jest.Mock).mockReturnValue({
+      unprotectData: unprotectDataFn,
+    });
+
+    const bufferPrefix = Buffer.from([0x01, 0x00, 0x00, 0x00]);
+
+    const bufContents = Buffer.from('bar');
+
+    const fullBuf = Buffer.concat([bufferPrefix, bufContents]);
+
+    const decrypted = decryptWindows(fullBuf);
+
+    expect(unprotectDataFn).toHaveBeenCalledWith(fullBuf, null, 'CurrentUser');
+
+    expect(decrypted).toEqual('foo');
   });
 });
