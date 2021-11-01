@@ -1,3 +1,5 @@
+import { inspect } from 'util';
+
 export function mergeDefaults<T>(defaults: T, options?: Partial<T>): T {
   return {
     ...defaults,
@@ -6,5 +8,5 @@ export function mergeDefaults<T>(defaults: T, options?: Partial<T>): T {
 }
 
 export function assertUnreachable(x: never): never {
-  return x;
+  throw new Error(`Invalid value ${inspect(x)}`);
 }
