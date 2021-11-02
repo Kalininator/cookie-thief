@@ -1,5 +1,5 @@
 import { mockPlatform, restorePlatform } from '../../test/util';
-import { getDerivedKey } from './getDerivedKey';
+import { getDerivedKey, getMacDerivedKey } from './getDerivedKey';
 import { getKeytar } from './optionalDependencies';
 
 /* MacOS pbkdf2
@@ -30,6 +30,18 @@ describe('get derived key', () => {
       'Platform win32 is not supported',
     );
     restorePlatform();
+  });
+
+  it('shoud throw if failed to get chrome password', async () => {
+    (getKeytar as jest.Mock).mockReturnValue({
+      getPassword: jest.fn().mockResolvedValue(undefined),
+    });
+
+    expect(
+      getMacDerivedKey(15, 1001),
+    ).rejects.toThrowErrorMatchingInlineSnapshot(
+      `"Could not fetch chrome password"`,
+    );
   });
 
   it('should return mac derived key', async () => {
